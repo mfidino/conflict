@@ -1,199 +1,236 @@
-# Simulate a spatial covariate
+# Simulate and analyze a poisson point process
 
-library(raster)
-library(mvtnorm)
 
+
+############################################
+# Setting up the area we are sampling
+############################################
+
+# load the utility functions
 source("sim_utility.R")
 
+packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales")
+
+# this will load these packages (and download if necessary.)
+package_load(packs)
+
 # bounds of the plane we are sampling within
-plane_xmin = -1
-plane_xmax =  1
-plane_ymin = -1
-plane_ymax =  1
+plane_xmin <- -1
+plane_xmax <-  1
+plane_ymin <- -1
+plane_ymax <-  1
 
-# area of space
-plane_area =  (plane_xmax-plane_xmin)*(plane_ymax-plane_ymin)
+# number of pixels in space. 
+npixels_x <- 1000
+npixels_y <- 1000
 
-# number of pixels in space
-npixels_x = 30
-npixels_y = 30
-
-# create a raster, currently has no data
-plane = raster(ncol=npixels_x, nrow=npixels_y, xmn=plane_xmin, xmx=plane_xmax, 
-					 ymn=plane_ymin, ymx=plane_ymax)
+# create a raster, currently has no data. We also make a blank raster
+#  so that we can easily add other layers.
+plane <- blank <- raster(ncol = npixels_x, nrow = npixels_y,
+								         xmn = plane_xmin, xmx = plane_xmax, 
+								         ymn=plane_ymin, ymx=plane_ymax)
 
 # the x y coordinates of each pixel in the plane
-plane_coord = xyFromCell(plane, 1:ncell(plane))
+plane_coord <- xyFromCell(plane, 1:ncell(plane))
 
-# generate a spatial covariate
-
+# generate a spatial covariate. gen_mvn from sim_utility.R script.
 x_cov <- 0.4 * gen_mvn(plane, c(0.1,0.8), c(1,1), 0.1) + 
 	       0.6 * gen_mvn(plane, c(0.7,0.2), c(0.5,0.75), 0.4)
 
-values(plane) = as.numeric(scale(x_cov))
-names(plane) = 'x'
-plot(plane)
+# add this covariate to plane raster object.
+values(plane) <- as.numeric(scale(x_cov))
+names(plane) <- 'x'
 
-
-sp_pres <- gen_process(plane, c(2,2), 4)
-
+# Species presence across the landscape. gen_process from sim_utility.R script.
+sp_pres <- gen_process(rast = plane,beta = c(6,1),my_seed = 4,
+												dm = cbind(1, values(plane$x)))
 
 # plot out species presence across landscape
 plot(plane$x)
 points(plane_coord[sp_pres$pixel_id, ], pch = 16)
 
+#############################
+# simulate presence only data
+#############################
 
-
-pa_data <- sample_pa(plane,200, 0.4, visits = 4)
-# push every other row over by delta x?
-
-plot(plane$x)
-points(plane_coord[sp_pres$pixel_id,], pch = 16)
-points(plane_coord[as.numeric(my_cams),], col = "brown")
-# do camera trapping
-
-my_sites <- as.numeric(my_cams)
-
-# detection probability
-det <- 0.4
-
-
-
-
-points(plane_coord[y_mat$pixel[y_mat$y > 0],], pch = 16, col = "blue")
-# get presence only data
+# Calculating this at the same resolution as the latent Poisson process
 
 # make a detection covariate that influences po detection
+w_cov <- 0.5 * gen_mvn(plane, c(0.7,0.8), c(0.2,0.3), 0.2) +
+	0.5 * gen_mvn(plane, c(0.1,0.3), c(0.2,0.3), 0.4)
 
-w_cov <- 0.2 * gen_mvn(s, c(0.2,0.8), c(0.5,0.75), 0.3) + 
-	0.8 * gen_mvn(s, c(0.3,0.9), c(0.5,0.3), 0.4)
-
-temp <- s
+# add this 
+temp <- blank
 values(temp) <- as.numeric(scale(w_cov))
 names(temp) <- "det"
-s <- addLayer(s, temp)
+plane <- addLayer(plane, temp)
+
+# detection lin_pred for thinned Poisson process
+beta_det <- c(1, 3)
+
+po_data <- sample_po(rast = plane, 
+										 dm = cbind(1, values(plane$det)),
+										 beta_det, pres = sp_pres)
+
+plot(plane$det)
+points(plane_coord[po_data$pixel_id,], pch = 16, col = "red")
+
+# aggregate down to the smaller scale for presence / absence sampling
+#  For this simulation we are reducing down to 625 cells.
+agg_factor <- 10
+agg_plane <- aggregate(plane, fact = agg_factor)
+
+# We need to know which cells the species is and is not in this aggregated cell.
+temp <- blank
+tmp_vals <- rep(0, ncell(temp))
+tmp_vals[po_data$pixel_id] <- 1
+values(temp) <- tmp_vals
+names(temp) <- "z"
+
+agg_po <- aggregate(temp, fact = agg_factor, fun = sum)
+
+agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
+
+agg_po_pixel_id <- which(values(agg_po)>0)
 
 
+plot(agg_plane$x )
+points(agg_loc[agg_po_pixel_id,])
 
-# detection lin_pred
-beta_det <- c(-0.4, 2)
+##################################
+# generate presence absence data
+##################################
 
-lp_det <- as.numeric(beta_det %*% t(cbind(1, values(s$det))))
+# We need to discretize the sample area to be more course (assuming that
+#  our sampling method captures a slightly wider area than how we simulated
+#  the latent Poisson process). 
 
-# which areas do we have a probability of getting po
-det_prob_po <- plogis(lp_det)
-det_prob_po[-pixel_id] <- 0
+agg_plane <- aggregate(plane, fact = agg_factor)
 
-po <- rbinom(length(det_prob_po), 1, det_prob_po) 
+# We need to know which cells the species is and is not in this aggregated cell.
 
-po_pixel <- c(1:400)[po == 1]
-plot(s$x, bty = "n")
-points(s.loc[pixel_id,], pch = 16, col = "black")
-points(s.loc[as.numeric(my_cams),], col = "brown")
-points(s.loc[po_pixel,], pch = 16, col = "red")
-points(s.loc[y_mat$pixel[y_mat$y > 0],], pch = 16, col = "blue")
+temp <- blank
+tmp_vals <- rep(0, ncell(temp))
+tmp_vals[sp_pres$pixel_id] <- 1
+values(temp) <- tmp_vals
+names(temp) <- "z"
+
+agg_pres <- aggregate(temp, fact = agg_factor, fun = sum)
+
+agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
+
+agg_pixelid <- which(values(agg_pres)>0)
+
+plot(agg_plane$x)
+points(agg_loc[agg_pixelid,])
+
+pa_data <- sample_pa(agg_plane, n = 300, visits = 4, 
+									sp_pixel = agg_pixelid,det_prob = 0.3)
+points(agg_loc[pa_data$site_pixel,], pch = 16)
 
 # fit an occupancy model with the grid based approach
 
-G <- ncell(plane)
+G <- ncell(agg_plane)
+
+# model using just the presence absence data
+
+my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
+								pa_det_covs = matrix(1, ncol = 1, nrow = G),
+								pa_pixel = pa_data$y_mat$pixel,
+								y_pa = pa_data$y_mat$y,
+								cell_area = rep(res(agg_plane)[1]*res(agg_plane)[2], 
+																length(values(agg_plane$x))),
+								npa = nrow(pa_data$y_mat))
 
 
-my_data <- list(G = G, occ_covs = cbind(1, values(plane$x)),
-								det_covs = matrix(1, ncol = 1, nrow = G),
-								pixel = y_mat$pixel,
-								y = y_mat$y,
-								cell_area = rep(res(plane)[1]*res(plane)[2], 
-																length(values(plane$x))),
-								nsite = nrow(y_mat))
-
-
-
-library(runjags)
-library(rjags)
-load.module('glm')
-
-inits <- function(chain){
-	gen_list <- function(chain = chain){
-		list( 
-			z = rep(1, G),
-			beta_occ = rnorm(2),
-			beta_det = rnorm(1),
-			.RNG.name = switch(chain,
-												 "1" = "base::Wichmann-Hill",
-												 "2" = "base::Marsaglia-Multicarry",
-												 "3" = "base::Super-Duper",
-												 "4" = "base::Mersenne-Twister",
-												 "5" = "base::Wichmann-Hill",
-												 "6" = "base::Marsaglia-Multicarry",
-												 "7" = "base::Super-Duper",
-												 "8" = "base::Mersenne-Twister"),
-			.RNG.seed = sample(1:1e+06, 1)
-		)
-	}
-	return(switch(chain,           
-								"1" = gen_list(chain),
-								"2" = gen_list(chain),
-								"3" = gen_list(chain),
-								"4" = gen_list(chain),
-								"5" = gen_list(chain),
-								"6" = gen_list(chain),
-								"7" = gen_list(chain),
-								"8" = gen_list(chain)
-	)
-	)
-}
 
 m1 <- run.jags(model = "PP_presence_absence_data.R", 
 							 data = my_data, 
 							 n.chains = 4, 
-							 inits = inits, 
-							 monitor = c("beta_occ", "beta_det", "psi"), 
+							 inits = inits_pa, 
+							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det",
+							 						"test1", "test2", "test3", "test4"), 
 							 adapt = 1000, 
-							 burnin = 5000, 
+							 burnin = 10000, 
 							 sample = 10000,
 							 method = 'parallel',
 							 summarise = FALSE)
 
-m2 <- as.matrix(as.mcmc.list(m1), chains = TRUE)
-zz <- m2[,5:ncol(m2)]
-
-zz <- apply(zz, 2, quantile, probs = c(0.025,0.5,0.975))
-zor <- order(zz[2,])
-
-plot(zz[2,zor], type = 'l', ylim = c(0,1), bty = "l", lwd = 3)
-lines(zz[1,zor], lty =3)
-lines(zz[3,zor], lty =3)
-
-points(my_occ[zor])
-plot(zz[2,] ~ lin_pred, type = 'l')
-zz <- colMeans(zz)
-
-parms <- m2[,2:4]
-
-apply(parms, 2, quantile, probs = c(0.025,0.5,0.975))
-temp <- plane
-temp <- dropLayer(temp, 1)
-
-values(temp) <- my_occ
-names(temp) <- "psi2"
-plane <- addLayer(plane, temp)
-
-plot(plane$psi2)
-points(sp_coord, pch = 16)
-# make a subset presence only
-
-po <- sample(pixel_id, 75, replace = FALSE)
-points(s.loc[po,], pch = 16, col = "red")
-points(s.loc[y_mat$pixel[y_mat$y > 0],], pch = 16, col = "blue")
+# try the integrated model
 
 
-mu2.x = s.xmin + 0.15*(s.xmax-s.xmin)
-mu2.y = s.ymin + 0.80*(s.ymax-s.ymin)
-sigma2.x = 0.50*abs(s.xmax-s.xmin)
-sigma2.y = 0.25*abs(s.ymax-s.ymin)
-rho2.xy = -0.4
-mu2 = c(mu2.x, mu2.y)
-Sigma2 = matrix(c(sigma2.x^2, rep(rho2.xy*sigma2.x*sigma2.y, 2), sigma2.y^2), ncol=2)
 
-xcov = 0.4 * dmvnorm(s.loc, mean=mu1, sigma=Sigma1) + 0.6 * dmvnorm(s.loc, mean=mu2, sigma=Sigma2)
-xcov = (xcov - mean(xcov))/sd(xcov)
+my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
+								po_det_covs = cbind(1, values(agg_plane$det)),
+								pa_det_covs = matrix(1, ncol = 1, nrow = G),
+								pa_pixel = pa_data$y_mat$pixel,
+								po_pixel = agg_po_pixel_id,
+								y_pa = pa_data$y_mat$y,
+								ones = rep(1, length(agg_po_pixel_id)),
+								cell_area = log(prod(res(agg_plane))),
+								npa = nrow(pa_data$y_mat),
+								npo = length(y_po),
+								CONSTANT = 10000)
+
+m2 <- run.jags(model = "integrated_ones.R", 
+							 data = my_data, 
+							 n.chains = 4, 
+							 inits = inits, 
+							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det",
+							 						"background"), 
+							 adapt = 1000, 
+							 burnin = 10000, 
+							 sample = 10000,
+							 method = 'parallel',
+							 summarise = FALSE)
+
+##########################
+# summarize the two models
+##########################
+
+# get mcmc matrix from PA model
+#  Removing the first column because it just signifies which chain the mcmc
+#  step came from.
+pamm <- as.matrix(as.mcmc.list(m1), chains = TRUE)[,-1]
+
+# calculate median and 95% CI
+pamm_ci <- apply(pamm, 2, quantile, probs = c(0.025,0.5, 0.975))
+
+# do the same for the integrated model
+intmm <- as.matrix(as.mcmc.list(m2), chains = TRUE)[,-1]
+intmm_ci <- apply(intmm, 2, quantile, probs = c(0.025,0.5, 0.975))
+windows(4,4)
+tiff("model_comparison.tiff", height = 4, width = 4, units = "in",
+		 res = 300, compression = "lzw")
+par(mar = c(2,4,1,1))
+plot(1~1, bty = "l", ylim = c(0, 7), xlim = c(0.5,2.5), type = "n",
+		 xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+
+axis(1, at = seq(1, 2, 1), labels = F, tck = -0.025)
+mtext(c("Intercept", "Slope"), 1, line = 0.6, at = c(1,2), cex = 1.5)
+
+axis(2, at = seq(0,7,1), labels = F, tck = -0.025)
+axis(2, at = seq(0,7,1/2), labels = F, tck = -0.025/2)
+mtext(text = seq(0,7,1),2, line = 0.75, las = 1, at = seq(0,7,1))
+mtext("Estimate", 2, line = 2, at = mean(c(0,7)), cex = 1.5)
+
+lines(x = c(0,1.5), y = c(6,6), lty = 3, lwd = 3)
+my_vioplot(pamm[,1], add = TRUE, wex = 0.3, at = 0.75, 
+					 col = scales::alpha("#FF7E00", 0.4))
+my_vioplot(intmm[,1], add = TRUE, wex = 0.3, at = 1.25, 
+					 col = scales::alpha("#7e7F8B", 0.4))
+
+lines(x = c(1.5,3), y = c(1,1), lty = 6, lwd = 3)
+
+my_vioplot(pamm[,2], add = TRUE, wex = 0.3, at = 1.75, 
+					 col = scales::alpha("#FF7E00", 0.4))
+my_vioplot(intmm[,2], add = TRUE, wex = 0.3, at = 2.25, 
+					 col = scales::alpha("#7e7F8B", 0.4))
+
+legend("topright", legend = c("PA", "PA & PO"), 
+			 col = c(scales::alpha("#FF7E00",0.4),scales::alpha("#7e7F8B",0.4)),
+			 				lty = 1, lwd = 7 , bty = "n", title = "Model")
+dev.off()
+
+
+

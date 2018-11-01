@@ -20,9 +20,6 @@
 gen_mvn <- function(rast = NULL, mu = NULL,
 										sigma = NULL, rho = NULL){
 	# error checking
-	if(class(rast) != "RasterLayer"){
-	stop("rast must be a raster object")
-	}
 	if(length(mu) != 2 | !is.numeric(mu) | any(mu > 1) | any(mu < 0)){
 		stop("mu must be a numeric vector of length 2.")
 	}
@@ -57,57 +54,58 @@ gen_mvn <- function(rast = NULL, mu = NULL,
 #
 # rast = raster object of plane
 #
-# beta = conformable vector or matrix to values in rast object.
+# dm = design matrix. First column must be 1
+#
+# beta = conformable vector or matrix to values in dm object.
 # 
 # my_seed = seed to randomly generate values. For reproducibility.
 #
 # return_occ = return derived occupancy probability in each cell. 
 #  defaults to false.
 
-gen_process <- function(rast = NULL, beta = NULL, my_seed = NULL,
+gen_process <- function(rast = NULL, dm = NULL, beta = NULL, my_seed = NULL,
 												return_occ = FALSE){
-	if(class(rast) != "RasterLayer"){
-		stop("rast must be a raster object")
-	}
 	if(is.null(my_seed)){
 		my_seed <- floor(runif(1, -1e4, 1e4))
 	}
 	set.seed(my_seed)
 	
+	# cell area on log scale
+	cell_area <- log(prod(res(rast)))
+	# coords
+	rast_coord <- xyFromCell(rast, 1:ncell(rast))
+	
 	# log-linear intensity
-	lin_pred <- exp(as.numeric(cbind(1, values(rast)) %*% beta ))
+	lin_pred <- exp(as.numeric(dm %*% beta ) + cell_area)
 	
 	# get area of raster
 	rast_extent <- extent(rast)
 	rast_area <- (rast_extent[2] - rast_extent[1]) * 
 		(rast_extent[4] - rast_extent[3])
 	
-	# generate number of individuals potentially on plane
-	my_n <- rpois(1, max(lin_pred) * rast_area)
+	# probability of an individual being in a cell
+	my_prob <- 1 - exp(-lin_pred)
 	
-	if(my_n > ncell(rast)){
-		stop("\nThe number of cells occupied is greater than the total number of cells. \nEither add more cells or decrease beta values.")
-	}
-	#  sampling w/o replacement ensures only 1 indiv per pixel
-	plane_loc <- sort(sample(1:ncell(plane), size=my_n, replace=FALSE))
+	# expected population size
+	pop_size <- sum(lin_pred)
 	
-	# put species on landscape relative to how well each cell is for the species
-	sp_there = runif(my_n, 0,1) <= lin_pred[plane_loc]/max(lin_pred)
+	# add some variability to population size
+	pop_size <- rpois(1, pop_size)
 	
-	
-	# the pixels that have the species
-	pixel_id <- plane_loc[sp_there]
+	# place individuals on the landscape relative to the quality of each
+	#  cell.
+	pixel_id <- sort(sample(x = 1:ncell(rast), 
+													size = pop_size, 
+													prob = my_prob, 
+													replace = FALSE))
 	
 	# coordinates that have speices
-	sp_coord = plane_coord[pixel_id,]
-	
-	# calcualte it as an occupancy probability via comp log log link
-	#  multiply by area of each cell to approximate lambda
-	my_occ <- 1 - exp(-lin_pred * prod(res(plane)))
+	sp_coord <- rast_coord[pixel_id,]
 	
 	to_return <- list(beta = beta,
 										seed = my_seed,
-										pixel_id = pixel_id)
+										pixel_id = pixel_id,
+										lambda = lin_pred)
 	# return derived occupancy probability for each cell
 	if(return_occ){
 		to_return <- c(to_return, occ_prob)
@@ -131,7 +129,7 @@ sample_pa <- function(rast = NULL, n = NULL,
 	h <- dim(rast)[2]
 	
 	# very rough and somewaht even spacing of cameras
-	my_cams <- floor(seq(1, ncell(plane), length.out = n))
+	my_cams <- floor(seq(1, ncell(rast), length.out = n))
 	
 	# move half the cameras a little bit so they don't end up in a line
 	jiggle_cam <- sort(sample(1:n, floor(n/2), replace = FALSE))
@@ -145,7 +143,7 @@ sample_pa <- function(rast = NULL, n = NULL,
 	}
 	
 	
-	sp_pres_det <- sort(sp_pres$pixel_id[which(sp_pres$pixel_id %in% my_cams)])
+	sp_pres_det <- sort(sp_pixel[which(sp_pixel %in% my_cams)])
 	
 	y_mat <- data.frame(pixel = sort(my_cams), y = 0)
 	
@@ -161,3 +159,233 @@ sample_pa <- function(rast = NULL, n = NULL,
 										sites_detected = length(sp_pres_det))
 	return(to_return)
 }
+
+
+# sample_po: sample presence only data
+#  returns a vector of the pixels that a species is detected as 'present' 
+#  based off of the 'det' covariate layer in object 'rast' and the 'beta' values.
+#  Must also include the true presence of indviduals across the landscape that
+#  was calculated via gen_process.
+sample_po <- function(rast = NULL, dm = NULL, beta = NULL, 
+											pres = NULL, my_seed = NULL ){
+	if(is.null(my_seed)){
+		my_seed <- floor(runif(1, -1e4, 1e4))
+	}
+	set.seed(my_seed)
+	# cell area in log scale
+	cell_area <- log(prod(res(rast)))
+	# coords
+	rast_coord <- xyFromCell(rast, 1:ncell(rast))
+	
+	#
+	lp_det <- plogis(dm %*% beta)
+	lp_det[-sp_pres$pixel_id] <- 0
+	
+	pixel_id <- rbinom(n = ncell(rast), 1, prob = lp_det)
+	pixel_id <- which(pixel_id > 0)
+	
+	# drop half of the points
+	pixel_id <- sample(pixel_id, size = floor(length(pixel_id)/1.2), replace = FALSE)
+	
+	to_return <- list(pixel_id = pixel_id, seed = my_seed, beta = beta)
+	return(to_return)
+}
+
+
+sample_po2 <- function(rast = NULL, dm = NULL, beta = NULL, 
+											pres = NULL, my_seed = NULL ){
+	if(is.null(my_seed)){
+		my_seed <- floor(runif(1, -1e4, 1e4))
+	}
+	set.seed(my_seed)
+	# cell area in log scale
+	cell_area <- log(prod(res(rast)))
+	# coords
+	rast_coord <- xyFromCell(rast, 1:ncell(rast))
+	
+	#
+	sp_pres_lam <- log(sp_pres$lambda)
+	lp_det <- dm %*% beta
+	lin_pred <- sp_pres_lam + lp_det
+	my_prob <- as.numeric(1 - exp(-exp(lin_pred)))
+	my_n <- sum(sp_pres$lambda)
+	my_n <- rpois(1, my_n)
+	
+	pixel_id <- sample(1:ncell(rast), my_n, prob = my_prob, replace = FALSE)
+	pixel_id <- sort(sample(pixel_id, floor(length(pixel_id) * 0.7), replace = FALSE))
+	
+	
+	to_return <- list(pixel_id = pixel_id, seed = my_seed, beta = beta)
+	return(to_return)
+}
+
+# initial values for presence absence
+
+inits_pa <- function(chain){
+	gen_list <- function(chain = chain){
+		list( 
+			z = rep(1, G),
+			beta_occ = rnorm(2),
+			beta_pa_det = rnorm(1),
+			.RNG.name = switch(chain,
+												 "1" = "base::Wichmann-Hill",
+												 "2" = "base::Marsaglia-Multicarry",
+												 "3" = "base::Super-Duper",
+												 "4" = "base::Mersenne-Twister",
+												 "5" = "base::Wichmann-Hill",
+												 "6" = "base::Marsaglia-Multicarry",
+												 "7" = "base::Super-Duper",
+												 "8" = "base::Mersenne-Twister"),
+			.RNG.seed = sample(1:1e+06, 1)
+		)
+	}
+	return(switch(chain,           
+								"1" = gen_list(chain),
+								"2" = gen_list(chain),
+								"3" = gen_list(chain),
+								"4" = gen_list(chain),
+								"5" = gen_list(chain),
+								"6" = gen_list(chain),
+								"7" = gen_list(chain),
+								"8" = gen_list(chain)
+	)
+	)
+}
+
+# initial values for integrated sdm
+
+inits <- function(chain){
+	gen_list <- function(chain = chain){
+		list( 
+			z = rep(1, G),
+			beta_occ = rnorm(2),
+			beta_pa_det = rnorm(1),
+			beta_po_det = rnorm(2),
+			.RNG.name = switch(chain,
+												 "1" = "base::Wichmann-Hill",
+												 "2" = "base::Marsaglia-Multicarry",
+												 "3" = "base::Super-Duper",
+												 "4" = "base::Mersenne-Twister",
+												 "5" = "base::Wichmann-Hill",
+												 "6" = "base::Marsaglia-Multicarry",
+												 "7" = "base::Super-Duper",
+												 "8" = "base::Mersenne-Twister"),
+			.RNG.seed = sample(1:1e+06, 1)
+		)
+	}
+	return(switch(chain,           
+								"1" = gen_list(chain),
+								"2" = gen_list(chain),
+								"3" = gen_list(chain),
+								"4" = gen_list(chain),
+								"5" = gen_list(chain),
+								"6" = gen_list(chain),
+								"7" = gen_list(chain),
+								"8" = gen_list(chain)
+	)
+	)
+}
+
+
+my_vioplot <- function (x, ..., range = 1.5, h = NULL, ylim = NULL, names = NULL, 
+												horizontal = FALSE, col = "magenta", border = "black", lty = 1, 
+												lwd = 1, rectCol = "black", colMed = "white", pchMed = 19, 
+												at, add = FALSE, wex = 1, drawRect = TRUE) 
+{
+	datas <- list(x, ...)
+	n <- length(datas)
+	if (missing(at)) 
+		at <- 1:n
+	upper <- vector(mode = "numeric", length = n)
+	lower <- vector(mode = "numeric", length = n)
+	q1 <- vector(mode = "numeric", length = n)
+	q3 <- vector(mode = "numeric", length = n)
+	med <- vector(mode = "numeric", length = n)
+	base <- vector(mode = "list", length = n)
+	height <- vector(mode = "list", length = n)
+	baserange <- c(Inf, -Inf)
+	args <- list(display = "none")
+	if (!(is.null(h))) 
+		args <- c(args, h = h)
+	for (i in 1:n) {
+		data <- datas[[i]]
+		data.min <- min(data)
+		data.max <- max(data)
+		q1[i] <- quantile(data, 0.25)
+		q3[i] <- quantile(data, 0.75)
+		med[i] <- median(data)
+		iqd <- q3[i] - q1[i]
+		upper[i] <- min(q3[i] + range * iqd, data.max)
+		lower[i] <- max(q1[i] - range * iqd, data.min)
+		est.xlim <- c(min(lower[i], data.min), max(upper[i], 
+																							 data.max))
+		smout <- do.call("sm.density", c(list(data, xlim = est.xlim), 
+																		 args))
+		hscale <- 0.4/max(smout$estimate) * wex
+		base[[i]] <- smout$eval.points
+		height[[i]] <- smout$estimate * hscale
+		t <- range(base[[i]])
+		baserange[1] <- min(baserange[1], t[1])
+		baserange[2] <- max(baserange[2], t[2])
+	}
+	if (!add) {
+		xlim <- if (n == 1) 
+			at + c(-0.5, 0.5)
+		else range(at) + min(diff(at))/2 * c(-1, 1)
+		if (is.null(ylim)) {
+			ylim <- baserange
+		}
+	}
+	if (is.null(names)) {
+		label <- 1:n
+	}
+	else {
+		label <- names
+	}
+	boxwidth <- 0.05 * wex
+	if (!add) 
+		plot.new()
+	if (!horizontal) {
+		if (!add) {
+			plot.window(xlim = xlim, ylim = ylim)
+			axis(2)
+			axis(1, at = at, label = label)
+		}
+		# box()
+		for (i in 1:n) {
+			polygon(c(at[i] - height[[i]], rev(at[i] + height[[i]])), 
+							c(base[[i]], rev(base[[i]])), col = col, border = border, 
+							lty = lty, lwd = lwd)
+			if (drawRect) {
+				lines(at[c(i, i)], c(lower[i], upper[i]), lwd = lwd, 
+							lty = lty)
+				rect(at[i] - boxwidth/2, q1[i], at[i] + boxwidth/2, 
+						 q3[i], col = rectCol)
+				points(at[i], med[i], pch = pchMed, col = colMed)
+			}
+		}
+	}
+	else {
+		if (!add) {
+			plot.window(xlim = ylim, ylim = xlim)
+			axis(1)
+			axis(2, at = at, label = label)
+		}
+		# box()
+		for (i in 1:n) {
+			polygon(c(base[[i]], rev(base[[i]])), c(at[i] - height[[i]], 
+																							rev(at[i] + height[[i]])), col = col, border = border, 
+							lty = lty, lwd = lwd)
+			if (drawRect) {
+				lines(c(lower[i], upper[i]), at[c(i, i)], lwd = lwd, 
+							lty = lty)
+				rect(q1[i], at[i] - boxwidth/2, q3[i], at[i] + 
+						 	boxwidth/2, col = rectCol)
+				points(med[i], at[i], pch = pchMed, col = colMed)
+			}
+		}
+	}
+	invisible(list(upper = upper, lower = lower, median = med, 
+								 q1 = q1, q3 = q3))
+}
+
