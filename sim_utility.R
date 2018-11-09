@@ -64,13 +64,18 @@ gen_mvn <- function(rast = NULL, mu = NULL,
 # gen_process: 
 #  Uses a PPP to place a species throughout a given landscape.
 #  returns the given parameter values, seed used to generate distribution,
-#  and the cell a species is located.
+#  and the cell a species is located. Returns the pixels the species are located
+#  as a vector for one sampling season or as a list if multiple sampling seasons.
 #
-# rast = raster object of plane
+# Arguments:
+# 
+# rast = raster object of spatial covariate
 #
-# dm = design matrix. First column must be 1
+# dm = design matrix. First column must be vector of 1's for intercept. Must
+#  have one row for each cell. Each column is for a different parameter.
 #
-# beta = conformable vector or matrix to values in dm object.
+# beta = conformable vector or matrix to values in dm object. If a matrix,
+#   then each row is assumed to be a new point sampling session.
 # 
 # my_seed = seed to randomly generate values. For reproducibility.
 #
@@ -90,7 +95,7 @@ gen_process <- function(rast = NULL, dm = NULL, beta = NULL, my_seed = NULL,
 	rast_coord <- xyFromCell(rast, 1:ncell(rast))
 	
 	# log-linear intensity
-	lin_pred <- exp(as.numeric(dm %*% beta ) + cell_area)
+	lin_pred <- t(exp(beta %*% t(dm)  + cell_area))
 	
 	# get area of raster
 	rast_extent <- extent(rast)
@@ -101,21 +106,27 @@ gen_process <- function(rast = NULL, dm = NULL, beta = NULL, my_seed = NULL,
 	my_prob <- 1 - exp(-lin_pred)
 	
 	# expected population size
-	pop_size <- sum(lin_pred)
+	pop_size <- colSums(lin_pred)
 	
 	# add some variability to population size
-	pop_size <- rpois(1, pop_size)
+	pop_size <- rpois(length(pop_size), pop_size)
 	
 	# place individuals on the landscape relative to the quality of each
 	#  cell.
-	pixel_id <- sort(sample(x = 1:ncell(rast), 
-													size = pop_size, 
-													prob = my_prob, 
-													replace = FALSE))
+	pixel_id <- vector("list", length = length(pop_size))
 	
-	# coordinates that have speices
-	sp_coord <- rast_coord[pixel_id,]
+	for(species in 1:length(pop_size)){
+		pixel_id[[species]] <- sort(sample(x = 1:ncell(rast), 
+																size = pop_size[species], 
+																prob = my_prob[,species], 
+																replace = FALSE))
+		
+	}
 	
+	# Drop the lists if only analyzing data for one year
+	if(length(pop_size) == 1){
+		pixel_id <- unlist(pixel_id)
+	}
 	to_return <- list(beta = beta,
 										seed = my_seed,
 										pixel_id = pixel_id,
