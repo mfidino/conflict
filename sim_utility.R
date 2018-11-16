@@ -247,6 +247,52 @@ sample_po <- function(rast = NULL, dm = NULL, beta = NULL,
 	return(to_return)
 }
 
+# agg sp_pres
+agg_pres <- function(rast = NULL, pixel_id = NULL, agg_factor = NULL){
+	
+	# make into list for t < 2
+	if(!is.list(pixel_id)){
+		pixel_id <- list(pixel_id)
+	}
+	ntime <- length(pixel_id)
+	# reduce rast to one layer if layers > 1
+	if(nlayers(rast) > 1){
+		rast <- dropLayer(rast, 2:nlayers(rast))
+	}
+	temp <- rast
+	
+	# make new layers for the presence of the species
+	#  in this raster layer
+	for(time in 1:ntime){
+	tmp_vals <- rep(0, ncell(temp))
+	tmp_vals[sp_pres$pixel_id[[time]]] <- 1
+	if(time == 1){ # overwrite first layer
+		values(rast) <- tmp_vals
+		names(rast) <- paste0("z", time)
+	} else { # add the rest
+		values(temp) <- tmp_vals
+		names(temp) <- paste0("z",time)
+		rast <- addLayer(rast, temp)
+	}
+	}
+	
+	# do aggregation. Aggregating for each column that we just generated
+	#  agg_factor is supplied argument.
+	agg_pres <- aggregate(rast,
+												by = paste0("z", 1:ntime),
+												fact = agg_factor, fun = sum)
+	
+	agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
+
+	agg_pixelid <- which(values(agg_pres)>0, arr.ind = TRUE)
+	agg_pixelid <- split(agg_pixelid[,1], factor(agg_pixelid[,2]))
+	
+	if(length(agg_pixelid) == 1){
+		agg_pixelid <- unlist(agg_pixelid)
+	}
+	return(agg_pixelid)
+}
+
 
 # initial values for presence absence
 

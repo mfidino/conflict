@@ -30,10 +30,11 @@ plot_dist <- function(rast = NULL, cov_name = NULL,
 	# get coordinates for plotting
 	rast_coord <- xyFromCell(rast, 1:ncell(rast))
   
-	# get the values to plot
-	vals <- getValues(rast)
+
 	
 	if(nlayers(rast) > 1){
+	# get the values to plot
+	vals <- getValues(rast)
 	rast <- dropLayer(rast, 2:nlayers(rast))
 	values(rast) <- as.numeric(vals[,cov_name])
 	}

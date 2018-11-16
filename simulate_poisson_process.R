@@ -79,26 +79,15 @@ plot_dist(plane, cov_name = "x", pixel_id = po_data$pixel_id)
 
 
 # aggregate down to the smaller scale for presence / absence sampling
-#  For this simulation we are reducing down to 625 cells.
 agg_factor <- 10
 agg_plane <- aggregate(plane, fact = agg_factor)
 
-# We need to know which cells the species is and is not in this aggregated cell.
-temp <- blank
-tmp_vals <- rep(0, ncell(temp))
-tmp_vals[po_data$pixel_id] <- 1
-values(temp) <- tmp_vals
-names(temp) <- "z"
 
-agg_po <- aggregate(temp, fact = agg_factor, fun = sum)
+# function to aggregate pixels from gen_process and sample_po
+agg_po_pixel_id <- agg_pres(plane, pixel_id = po_data$pixel_id, 
+														agg_factor = agg_factor)
 
-agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
-
-agg_po_pixel_id <- which(values(agg_po)>0)
-
-
-plot(agg_plane$x )
-points(agg_loc[agg_po_pixel_id,])
+plot_dist(agg_plane, cov_name = "x", pixel_id = test)
 
 ##################################
 # generate presence absence data
