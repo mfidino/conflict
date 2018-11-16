@@ -144,11 +144,11 @@ gen_process <- function(rast = NULL, dm = NULL, beta = NULL, my_seed = NULL,
 
 sample_pa <- function(rast = NULL, n = NULL, 
 											det_prob = NULL, visits = NULL,
-											sp_pixel = NULL, my_seed = NULL){
+											pixel_id = NULL, my_seed = NULL){
 	if(is.null(my_seed)){
 		my_seed <- floor(runif(1, -1e4, 1e4))
 	}
-	
+	set.seed(my_seed)
 	# dimensions of raster
 	w <- dim(rast)[1]
 	h <- dim(rast)[2]
@@ -167,21 +167,30 @@ sample_pa <- function(rast = NULL, n = NULL,
 		my_cams[my_cams > ncell(rast)] <- ncell(rast)
 	}
 	
+	if(!is.list(pixel_id)){
+		pixel_id <- list(pixel_id)
+	}
+	ntime <- length(pixel_id)
 	
-	sp_pres_det <- sort(sp_pixel[which(sp_pixel %in% my_cams)])
+	pixel_can_detect <- lapply(pixel_id, function(x){
+		sort(x[which(x %in% my_cams)])
+	})
 	
-	y_mat <- data.frame(pixel = sort(my_cams), y = 0)
+	y_mat <- matrix(0, ncol = (1 + length(pixel_id)), nrow = n)
+	y_mat[,1] <- sort(my_cams)
+	colnames(y_mat) <- c("pixel", paste0("y", 1:length(pixel_id)))
+	y_mat <- data.frame(y_mat)
 	
-	y_mat$y[which(y_mat$pixel %in% sp_pres_det)] <- rbinom(length(sp_pres_det), 
-																												 size = visits, 
-																												 det_prob)
+	for(time in 1:ntime){
+		tmp <- rbinom(length(pixel_can_detect[[time]]), size = visits, det_prob)
+	y_mat[which(y_mat$pixel %in% pixel_can_detect[[time]]),(time+1) ] <- tmp
+	}
 	
 	to_return <- list(y_mat = y_mat,
 										visits = visits,
 										site_pixel = my_cams,
 										det_prob = det_prob,
-										seed = my_seed,
-										sites_detected = length(sp_pres_det))
+										seed = my_seed)
 	return(to_return)
 }
 

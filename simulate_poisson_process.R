@@ -55,7 +55,9 @@ plot_dist(plane, cov_name = "x", pixel_id = sp_pres$pixel_id)
 # simulate presence only data
 #############################
 
-# Calculating this at the same resolution as the latent Poisson process
+# Calculating this at the same resolution as the latent Poisson point process
+#  We will later aggregate this to be at the same scale as the presence
+#  absence data.
 
 # make a detection covariate that influences po detection
 w_cov <- 0.5 * gen_mvn(plane, c(0.7,0.8), c(0.2,0.3), 0.2) +
@@ -87,7 +89,7 @@ agg_plane <- aggregate(plane, fact = agg_factor)
 agg_po_pixel_id <- agg_pres(plane, pixel_id = po_data$pixel_id, 
 														agg_factor = agg_factor)
 
-plot_dist(agg_plane, cov_name = "x", pixel_id = test)
+plot_dist(agg_plane, cov_name = "x", pixel_id = agg_po_pixel_id)
 
 ##################################
 # generate presence absence data
@@ -98,27 +100,20 @@ plot_dist(agg_plane, cov_name = "x", pixel_id = test)
 #  the latent Poisson process). 
 
 agg_plane <- aggregate(plane, fact = agg_factor)
+agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
 
 # We need to know which cells the species is and is not in this aggregated cell.
 
-temp <- blank
-tmp_vals <- rep(0, ncell(temp))
-tmp_vals[sp_pres$pixel_id] <- 1
-values(temp) <- tmp_vals
-names(temp) <- "z"
 
-agg_pres <- aggregate(temp, fact = agg_factor, fun = sum)
+agg_pixelid <- agg_pres(plane, pixel_id = sp_pres$pixel_id, agg_factor)
 
-agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
 
-agg_pixelid <- which(values(agg_pres)>0)
 
-plot(agg_plane$x)
-points(agg_loc[agg_pixelid,])
 
 pa_data <- sample_pa(agg_plane, n = 300, visits = 4, 
-									sp_pixel = agg_pixelid,det_prob = 0.3)
-points(agg_loc[pa_data$site_pixel,], pch = 16)
+									pixel_id = agg_pixelid,det_prob = 0.3)
+plot_dist(agg_plane, "x", agg_pixelid)
+points(agg_loc[pa_data$site_pixel,], pch = 16, col = "red")
 
 # fit an occupancy model with the grid based approach
 
