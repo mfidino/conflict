@@ -34,8 +34,8 @@ plot_dist <- function(rast = NULL, cov_name = NULL,
 	vals <- getValues(rast)
 	
 	if(nlayers(rast) > 1){
-	rast <- dropLayer(rast, 1:nlayers(rast))
-	values(rast) <- vals[,cov_name]
+	rast <- dropLayer(rast, 2:nlayers(rast))
+	values(rast) <- as.numeric(vals[,cov_name])
 	}
 	
 	# open a window if needed
@@ -55,7 +55,7 @@ plot_dist <- function(rast = NULL, cov_name = NULL,
 	}
 	
 	for(pt in 1:nplot){
-	plot(rast, main = paste("season", pt))
+	plot(rast, main = paste("T =", pt))
 	points(rast_coord[pixel_id[[pt]],], pch = 16)
 	}
 

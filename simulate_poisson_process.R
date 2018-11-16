@@ -42,12 +42,14 @@ values(plane) <- as.numeric(scale(x_cov))
 names(plane) <- 'x'
 
 # Species presence across the landscape. gen_process from sim_utility.R script.
-sp_pres <- gen_process(rast = plane,beta = c(6,1),my_seed = 4,
-												dm = cbind(1, values(plane$x)))
+sp_pres <- gen_process(rast = plane,beta = matrix(c(6,1, 4.5, -1, 5, 2), ncol = 2,
+																									nrow = 3, byrow=TRUE),
+											 my_seed = 4, dm = cbind(1, values(plane$x)))
 
-# plot out species presence across landscape
-plot(plane$x)
-points(plane_coord[sp_pres$pixel_id, ], pch = 16)
+# plot out species presence across landscape. 
+#  plot_dist from plot_utility.R script
+plot_dist(plane, cov_name = "x", pixel_id = sp_pres$pixel_id)
+
 
 #############################
 # simulate presence only data
@@ -72,8 +74,9 @@ po_data <- sample_po(rast = plane,
 										 dm = cbind(1, values(plane$det)),
 										 beta_det, pres = sp_pres)
 
-plot(plane$det)
-points(plane_coord[po_data$pixel_id,], pch = 16, col = "red")
+# plot out just the presence only data
+plot_dist(plane, cov_name = "x", pixel_id = po_data$pixel_id)
+
 
 # aggregate down to the smaller scale for presence / absence sampling
 #  For this simulation we are reducing down to 625 cells.

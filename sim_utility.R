@@ -192,57 +192,61 @@ sample_pa <- function(rast = NULL, n = NULL,
 #  Must also include the true presence of indviduals across the landscape that
 #  was calculated via gen_process.
 sample_po <- function(rast = NULL, dm = NULL, beta = NULL, 
-											pres = NULL, my_seed = NULL ){
+											pres = NULL, my_seed = NULL, prop_lost = 0.2 ){
 	if(is.null(my_seed)){
 		my_seed <- floor(runif(1, -1e4, 1e4))
 	}
 	set.seed(my_seed)
+	
+	# get number of seasons sampled
+	ntime <- ifelse(is.matrix(sp_pres$beta), nrow(sp_pres$beta), 1)
+	
+	# make det beta a matrix if we simulated data for more than one time step
+	#  but only supplied a single group of covariate values
+	#  i.e., sampled through time but things did not change in detection.
+	if(ntime > 1 & !is.matrix(beta)){
+		beta <- matrix(beta, ncol = length(beta), nrow = nrow(sp_pres$beta),
+									 byrow = TRUE)
+	}
+	
+	
 	# cell area in log scale
 	cell_area <- log(prod(res(rast)))
 	# coords
 	rast_coord <- xyFromCell(rast, 1:ncell(rast))
 	
 	#
-	lp_det <- plogis(dm %*% beta)
+	lp_det <- t(plogis(beta %*% t(dm)))
+	# turn detection to 0 if species not in cell. 
+	
+	# for multiple seasons
+	if(ntime > 1){
+		for(time in 1:ntime){
+			lp_det[-sp_pres$pixel_id[[time]],time] <- 0
+		}
+	} else { # for a single season
 	lp_det[-sp_pres$pixel_id] <- 0
-	
-	pixel_id <- rbinom(n = ncell(rast), 1, prob = lp_det)
-	pixel_id <- which(pixel_id > 0)
-	
-	# drop half of the points
-	pixel_id <- sample(pixel_id, size = floor(length(pixel_id)/1.2), replace = FALSE)
-	
-	to_return <- list(pixel_id = pixel_id, seed = my_seed, beta = beta)
-	return(to_return)
-}
-
-
-sample_po2 <- function(rast = NULL, dm = NULL, beta = NULL, 
-											pres = NULL, my_seed = NULL ){
-	if(is.null(my_seed)){
-		my_seed <- floor(runif(1, -1e4, 1e4))
 	}
-	set.seed(my_seed)
-	# cell area in log scale
-	cell_area <- log(prod(res(rast)))
-	# coords
-	rast_coord <- xyFromCell(rast, 1:ncell(rast))
 	
-	#
-	sp_pres_lam <- log(sp_pres$lambda)
-	lp_det <- dm %*% beta
-	lin_pred <- sp_pres_lam + lp_det
-	my_prob <- as.numeric(1 - exp(-exp(lin_pred)))
-	my_n <- sum(sp_pres$lambda)
-	my_n <- rpois(1, my_n)
+	pixel_id <- rbinom(n = ncell(rast) * nrow(sp_pres$beta), 1, prob = lp_det)
+	pixel_id <- matrix(pixel_id, nrow = nrow(lp_det), ncol = ncol(lp_det))
+	pixel_id <- which(pixel_id > 0, arr.ind = TRUE)
+	# make into a list
+	pixel_id <- split(pixel_id[,1], factor(pixel_id[,2]))
 	
-	pixel_id <- sample(1:ncell(rast), my_n, prob = my_prob, replace = FALSE)
-	pixel_id <- sort(sample(pixel_id, floor(length(pixel_id) * 0.7), replace = FALSE))
-	
+	# drop 20% of the points
+	pixel_id <- lapply(pixel_id, function(x){ sample(x, 
+					 size = floor(length(x) * (1 - prop_lost)), replace = FALSE)})
+
+	# remove list structure from pixel_id if one time step
+	if(ntime == 1){
+		pixel_id <- unlist(pixel_id)
+	}
 	
 	to_return <- list(pixel_id = pixel_id, seed = my_seed, beta = beta)
 	return(to_return)
 }
+
 
 # initial values for presence absence
 
