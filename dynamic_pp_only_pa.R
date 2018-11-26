@@ -24,11 +24,11 @@ model{
 		}
 	}
   # priors for observation 
-	#  currently a simple intercept only model
-	beta_observation ~ dlogis(0, 1)
+	#  currently does not vary by year
 	for(obs in 1:nobs){
+		beta_observation[obs] ~ dlogis(0, 1)
 		for(year in 1:nyear){
-			beta_pa_det[obs, year] <- beta_observation
+			beta_pa_det[obs, year] <- beta_observation[obs]
 	}
 }
 
