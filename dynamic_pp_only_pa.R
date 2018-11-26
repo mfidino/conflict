@@ -30,6 +30,7 @@ model{
 		for(year in 1:nyear){
 			beta_pa_det[obs, year] <- beta_observation[obs]
 	}
+	}
 }
 
 

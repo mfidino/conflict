@@ -308,9 +308,9 @@ agg_pres <- function(rast = NULL, pixel_id = NULL, agg_factor = NULL){
 inits_pa <- function(chain){
 	gen_list <- function(chain = chain){
 		list( 
-			z = rep(1, G),
-			beta_occ = rnorm(2),
-			beta_pa_det = rnorm(1),
+			z = matrix(1, ncol = 3, nrow = G),
+			beta_occ = matrix(rnorm(6), ncol = 2, nrow = 3),
+			beta_observation = rnorm(2),
 			.RNG.name = switch(chain,
 												 "1" = "base::Wichmann-Hill",
 												 "2" = "base::Marsaglia-Multicarry",

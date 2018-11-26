@@ -6,8 +6,9 @@
 # Setting up the area we are sampling
 ############################################
 
-# load the utility functions
-source("sim_utility.R")
+# load the plotting and utility functions
+source("sourcer.R")
+
 
 packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales")
 
@@ -117,6 +118,7 @@ points(agg_loc[pa_data$site_pixel,], pch = 16, col = "red")
 
 # fit an occupancy model with the grid based approach
 
+# the number of grid points
 G <- ncell(agg_plane)
 
 # model using just the presence absence data
@@ -124,22 +126,24 @@ G <- ncell(agg_plane)
 my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
 								pa_det_covs = matrix(1, ncol = 1, nrow = G),
 								pa_pixel = pa_data$y_mat$pixel,
-								y_pa = pa_data$y_mat$y,
+								y_pa = as.matrix(pa_data$y_mat[,-1]),
 								cell_area = rep(res(agg_plane)[1]*res(agg_plane)[2], 
 																length(values(agg_plane$x))),
-								npa = nrow(pa_data$y_mat))
+								npa = nrow(pa_data$y_mat),
+								nyear = nrow(sp_pres$beta),
+								nlatent = ncol(sp_pres$beta),
+								nobs = 1)
 
 
 
-m1 <- run.jags(model = "PP_presence_absence_data.R", 
+m1 <- run.jags(model = "dynamic_pp_only_pa.R", 
 							 data = my_data, 
-							 n.chains = 4, 
+							 n.chains = 2, 
 							 inits = inits_pa, 
-							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det",
-							 						"test1", "test2", "test3", "test4"), 
+							 monitor = c("beta_occ", "beta_pa_det"), 
 							 adapt = 1000, 
 							 burnin = 10000, 
-							 sample = 10000,
+							 sample = 20000,
 							 method = 'parallel',
 							 summarise = FALSE)
 
