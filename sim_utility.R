@@ -341,10 +341,10 @@ inits_pa <- function(chain){
 inits <- function(chain){
 	gen_list <- function(chain = chain){
 		list( 
-			z = rep(1, G),
-			beta_occ = rnorm(2),
-			beta_pa_det = rnorm(1),
-			beta_po_det = rnorm(2),
+			z = matrix(1, ncol = 3, nrow = G),
+			beta_occ = matrix(rnorm(6), ncol = 3, nrow = 2),
+			beta_observation = rnorm(1),
+			beta_po_fill = rnorm(2),
 			.RNG.name = switch(chain,
 												 "1" = "base::Wichmann-Hill",
 												 "2" = "base::Marsaglia-Multicarry",

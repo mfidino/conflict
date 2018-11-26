@@ -23,9 +23,11 @@ model{
 	}
 	#
 	# Analyze the (opp)orntunistic PO data
-	#  Since there is varying amounts of data per years
+	#  Since there is varying amounts of data per year
 	#  we use nested indexing to collect the appropriate parameters
 	#  for each PO datapoint.
+	#  This means that we have grouped all of the PO data into one long vector.
+	#  of length(all_npo)
 	for(opp in 1:all_npo){
 		# lambda for PO, nested indexing
 		log(lambda_po[opp]) <- inprod(occ_covs[po_pixel[opp], ], 
@@ -70,7 +72,7 @@ model{
 	for(obs_po in 1:nobs_po){
 		beta_po_fill[obs_po]  ~ dlogis(0, 1)
 		for(year in 1:nyear){
-			beta_po_det[ops_po, year] <- beta_po_fill[obs_po]
+			beta_po_det[obs_po, year] <- beta_po_fill[obs_po]
 		}
 	}
 	

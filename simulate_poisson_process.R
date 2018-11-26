@@ -149,28 +149,34 @@ m1 <- run.jags(model = "dynamic_pp_only_pa.R",
 
 # try the integrated model
 
-
+npo_count <- sapply(agg_po_pixel_id, length)
 
 my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
 								po_det_covs = cbind(1, values(agg_plane$det)),
 								pa_det_covs = matrix(1, ncol = 1, nrow = G),
 								pa_pixel = pa_data$y_mat$pixel,
-								po_pixel = agg_po_pixel_id,
-								y_pa = pa_data$y_mat$y,
-								ones = rep(1, length(agg_po_pixel_id)),
+								po_pixel = unlist(agg_po_pixel_id),
+								opp_year = rep(1:3, times = npo_count),
+								npo = as.numeric(npo_count),
+								all_npo = sum(npo_count),
+								y_pa = as.matrix(pa_data$y_mat[,-1]),
+								ones = rep(1, sum(npo_count)),
 								cell_area = log(prod(res(agg_plane))),
 								npa = nrow(pa_data$y_mat),
-								npo = length(y_po),
-								CONSTANT = 10000)
+								CONSTANT = 10000,
+								nobs_po = 2,
+								nobs_pa = 1,
+								nyear = 3,
+								nlatent = 2)
 
-m2 <- run.jags(model = "integrated_ones.R", 
+m2 <- run.jags(model = "dynamic_integrated_pp.R", 
 							 data = my_data, 
-							 n.chains = 4, 
+							 n.chains = 2, 
 							 inits = inits, 
 							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det"), 
 							 adapt = 1000, 
 							 burnin = 10000, 
-							 sample = 10000,
+							 sample = 20000,
 							 method = 'parallel',
 							 summarise = FALSE)
 
