@@ -13,6 +13,8 @@ source("sourcer.R")
 packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales",
 					 "coda")
 
+do_plots <- FALSE
+
 # this will load these packages (and download if necessary.)
 package_load(packs)
 
@@ -50,8 +52,9 @@ sp_pres <- gen_process(rast = plane,beta = matrix(c(6,1, 4.5, -1, 5, 2), ncol = 
 
 # plot out species presence across landscape. 
 #  plot_dist from plot_utility.R script
+if(do_plots){
 plot_dist(plane, cov_name = "x", pixel_id = sp_pres$pixel_id)
-
+}
 
 #############################
 # simulate presence only data
@@ -79,8 +82,9 @@ po_data <- sample_po(rast = plane,
 										 beta_det, pres = sp_pres)
 
 # plot out just the presence only data
+if(do_plots){
 plot_dist(plane, cov_name = "x", pixel_id = po_data$pixel_id)
-
+}
 
 # aggregate down to the smaller scale for presence / absence sampling
 agg_factor <- 10
@@ -91,7 +95,9 @@ agg_plane <- aggregate(plane, fact = agg_factor)
 agg_po_pixel_id <- agg_pres(plane, pixel_id = po_data$pixel_id, 
 														agg_factor = agg_factor)
 
+if(do_plots){
 plot_dist(agg_plane, cov_name = "x", pixel_id = agg_po_pixel_id)
+}
 
 ##################################
 # generate presence absence data
@@ -114,9 +120,10 @@ agg_pixelid <- agg_pres(plane, pixel_id = sp_pres$pixel_id, agg_factor)
 
 pa_data <- sample_pa(agg_plane, n = 300, visits = 4, 
 									pixel_id = agg_pixelid,det_prob = 0.3)
+if(do_plots){
 plot_dist(agg_plane, "x", agg_pixelid)
 points(agg_loc[pa_data$site_pixel,], pch = 16, col = "red")
-
+}
 # fit an occupancy model with the grid based approach
 
 # the number of grid points
@@ -139,12 +146,13 @@ my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
 
 m1 <- run.jags(model = "dynamic_pp_only_pa.R", 
 							 data = my_data, 
-							 n.chains = 2, 
+							 n.chains = 4, 
 							 inits = inits_pa, 
 							 monitor = c("beta_occ", "beta_pa_det"), 
 							 adapt = 1000, 
-							 burnin = 10000, 
-							 sample = 20000,
+							 burnin = 2000, 
+							 sample = 3000,
+							 thin = 2,
 							 method = 'parallel',
 							 summarise = FALSE)
 
@@ -172,12 +180,13 @@ my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
 
 m2 <- run.jags(model = "dynamic_integrated_pp.R", 
 							 data = my_data, 
-							 n.chains = 2, 
+							 n.chains = 6, 
 							 inits = inits, 
 							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det"), 
 							 adapt = 1000, 
-							 burnin = 10000, 
-							 sample = 20000,
+							 burnin = 2000, 
+							 sample = 3000,
+							 thin = 5,
 							 method = 'parallel',
 							 summarise = FALSE)
 
