@@ -274,7 +274,7 @@ agg_pres <- function(rast = NULL, pixel_id = NULL, agg_factor = NULL){
 	#  in this raster layer
 	for(time in 1:ntime){
 	tmp_vals <- rep(0, ncell(temp))
-	tmp_vals[sp_pres$pixel_id[[time]]] <- 1
+	tmp_vals[pixel_id[[time]]] <- 1
 	if(time == 1){ # overwrite first layer
 		values(rast) <- tmp_vals
 		names(rast) <- paste0("z", time)

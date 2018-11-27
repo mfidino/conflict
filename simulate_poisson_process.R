@@ -10,7 +10,8 @@
 source("sourcer.R")
 
 
-packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales")
+packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales",
+					 "coda")
 
 # this will load these packages (and download if necessary.)
 package_load(packs)
