@@ -6,10 +6,14 @@
 # Setting up the area we are sampling
 ############################################
 
-# load the utility functions
-source("sim_utility.R")
+# load the plotting and utility functions
+source("sourcer.R")
 
-packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales")
+
+packs <- c("raster", "mvtnorm", "runjags", "rjags", "vioplot", "scales",
+					 "coda")
+
+do_plots <- FALSE
 
 # this will load these packages (and download if necessary.)
 package_load(packs)
@@ -42,18 +46,23 @@ values(plane) <- as.numeric(scale(x_cov))
 names(plane) <- 'x'
 
 # Species presence across the landscape. gen_process from sim_utility.R script.
-sp_pres <- gen_process(rast = plane,beta = c(6,1),my_seed = 4,
-												dm = cbind(1, values(plane$x)))
+sp_pres <- gen_process(rast = plane,beta = matrix(c(6,1, 4.5, -1, 5, 2), ncol = 2,
+																									nrow = 3, byrow=TRUE),
+											 my_seed = 4, dm = cbind(1, values(plane$x)))
 
-# plot out species presence across landscape
-plot(plane$x)
-points(plane_coord[sp_pres$pixel_id, ], pch = 16)
+# plot out species presence across landscape. 
+#  plot_dist from plot_utility.R script
+if(do_plots){
+plot_dist(plane, cov_name = "x", pixel_id = sp_pres$pixel_id)
+}
 
 #############################
 # simulate presence only data
 #############################
 
-# Calculating this at the same resolution as the latent Poisson process
+# Calculating this at the same resolution as the latent Poisson point process
+#  We will later aggregate this to be at the same scale as the presence
+#  absence data.
 
 # make a detection covariate that influences po detection
 w_cov <- 0.5 * gen_mvn(plane, c(0.7,0.8), c(0.2,0.3), 0.2) +
@@ -72,30 +81,23 @@ po_data <- sample_po(rast = plane,
 										 dm = cbind(1, values(plane$det)),
 										 beta_det, pres = sp_pres)
 
-plot(plane$det)
-points(plane_coord[po_data$pixel_id,], pch = 16, col = "red")
+# plot out just the presence only data
+if(do_plots){
+plot_dist(plane, cov_name = "x", pixel_id = po_data$pixel_id)
+}
 
 # aggregate down to the smaller scale for presence / absence sampling
-#  For this simulation we are reducing down to 625 cells.
 agg_factor <- 10
 agg_plane <- aggregate(plane, fact = agg_factor)
 
-# We need to know which cells the species is and is not in this aggregated cell.
-temp <- blank
-tmp_vals <- rep(0, ncell(temp))
-tmp_vals[po_data$pixel_id] <- 1
-values(temp) <- tmp_vals
-names(temp) <- "z"
 
-agg_po <- aggregate(temp, fact = agg_factor, fun = sum)
+# function to aggregate pixels from gen_process and sample_po
+agg_po_pixel_id <- agg_pres(plane, pixel_id = po_data$pixel_id, 
+														agg_factor = agg_factor)
 
-agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
-
-agg_po_pixel_id <- which(values(agg_po)>0)
-
-
-plot(agg_plane$x )
-points(agg_loc[agg_po_pixel_id,])
+if(do_plots){
+plot_dist(agg_plane, cov_name = "x", pixel_id = agg_po_pixel_id)
+}
 
 ##################################
 # generate presence absence data
@@ -106,30 +108,25 @@ points(agg_loc[agg_po_pixel_id,])
 #  the latent Poisson process). 
 
 agg_plane <- aggregate(plane, fact = agg_factor)
+agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
 
 # We need to know which cells the species is and is not in this aggregated cell.
 
-temp <- blank
-tmp_vals <- rep(0, ncell(temp))
-tmp_vals[sp_pres$pixel_id] <- 1
-values(temp) <- tmp_vals
-names(temp) <- "z"
 
-agg_pres <- aggregate(temp, fact = agg_factor, fun = sum)
+agg_pixelid <- agg_pres(plane, pixel_id = sp_pres$pixel_id, agg_factor)
 
-agg_loc <- xyFromCell(agg_plane, 1:ncell(agg_plane))
 
-agg_pixelid <- which(values(agg_pres)>0)
 
-plot(agg_plane$x)
-points(agg_loc[agg_pixelid,])
 
 pa_data <- sample_pa(agg_plane, n = 300, visits = 4, 
-									sp_pixel = agg_pixelid,det_prob = 0.3)
-points(agg_loc[pa_data$site_pixel,], pch = 16)
-
+									pixel_id = agg_pixelid,det_prob = 0.3)
+if(do_plots){
+plot_dist(agg_plane, "x", agg_pixelid)
+points(agg_loc[pa_data$site_pixel,], pch = 16, col = "red")
+}
 # fit an occupancy model with the grid based approach
 
+# the number of grid points
 G <- ncell(agg_plane)
 
 # model using just the presence absence data
@@ -137,49 +134,59 @@ G <- ncell(agg_plane)
 my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
 								pa_det_covs = matrix(1, ncol = 1, nrow = G),
 								pa_pixel = pa_data$y_mat$pixel,
-								y_pa = pa_data$y_mat$y,
+								y_pa = as.matrix(pa_data$y_mat[,-1]),
 								cell_area = rep(res(agg_plane)[1]*res(agg_plane)[2], 
 																length(values(agg_plane$x))),
-								npa = nrow(pa_data$y_mat))
+								npa = nrow(pa_data$y_mat),
+								nyear = nrow(sp_pres$beta),
+								nlatent = ncol(sp_pres$beta),
+								nobs = 1)
 
 
 
-m1 <- run.jags(model = "PP_presence_absence_data.R", 
+m1 <- run.jags(model = "dynamic_pp_only_pa.R", 
 							 data = my_data, 
 							 n.chains = 4, 
 							 inits = inits_pa, 
-							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det",
-							 						"test1", "test2", "test3", "test4"), 
+							 monitor = c("beta_occ", "beta_pa_det"), 
 							 adapt = 1000, 
-							 burnin = 10000, 
-							 sample = 10000,
+							 burnin = 2000, 
+							 sample = 3000,
+							 thin = 2,
 							 method = 'parallel',
 							 summarise = FALSE)
 
 # try the integrated model
 
-
+npo_count <- sapply(agg_po_pixel_id, length)
 
 my_data <- list(G = G, occ_covs = cbind(1, values(agg_plane$x)),
 								po_det_covs = cbind(1, values(agg_plane$det)),
 								pa_det_covs = matrix(1, ncol = 1, nrow = G),
 								pa_pixel = pa_data$y_mat$pixel,
-								po_pixel = agg_po_pixel_id,
-								y_pa = pa_data$y_mat$y,
-								ones = rep(1, length(agg_po_pixel_id)),
+								po_pixel = unlist(agg_po_pixel_id),
+								opp_year = rep(1:3, times = npo_count),
+								npo = as.numeric(npo_count),
+								all_npo = sum(npo_count),
+								y_pa = as.matrix(pa_data$y_mat[,-1]),
+								ones = rep(1, sum(npo_count)),
 								cell_area = log(prod(res(agg_plane))),
 								npa = nrow(pa_data$y_mat),
-								npo = length(y_po),
-								CONSTANT = 10000)
+								CONSTANT = 10000,
+								nobs_po = 2,
+								nobs_pa = 1,
+								nyear = 3,
+								nlatent = 2)
 
-m2 <- run.jags(model = "integrated_ones.R", 
+m2 <- run.jags(model = "dynamic_integrated_pp.R", 
 							 data = my_data, 
-							 n.chains = 4, 
+							 n.chains = 6, 
 							 inits = inits, 
 							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det"), 
 							 adapt = 1000, 
-							 burnin = 10000, 
-							 sample = 10000,
+							 burnin = 2000, 
+							 sample = 3000,
+							 thin = 5,
 							 method = 'parallel',
 							 summarise = FALSE)
 
