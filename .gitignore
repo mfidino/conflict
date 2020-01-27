@@ -39,3 +39,7 @@ dorazio*
 
 *.tiff
 *.RDS
+
+/foias/*
+*.xls
+*.xlsx

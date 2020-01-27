@@ -42,7 +42,6 @@ model{
 		exp_po[opp] <- exp(ll_po[opp]) / CONSTANT
 		# one's trick
 		ones[opp] ~ dbern(exp_po[opp])
-		
 	}
 	
 	for(site in 1:npa){
