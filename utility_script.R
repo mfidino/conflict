@@ -173,3 +173,97 @@ point_count <- function(my_raster, my_pts){
 	
 	return(tmp)
 }
+
+#########################
+# order seasons
+#########################
+
+
+# Seasons are ordered like FA13, SP13, etc. They need to get ordered
+#  chronologically, not alphabetically
+order_seasons <- function(x){
+	unq_seasons <- unique(x)
+	month <- substr(unq_seasons,1,2)
+	
+	tmp <- sapply(month, function(y) switch(y, "WI" = 0.1,
+																					"SP" = 0.2,
+																					"SU" = 0.3,
+																					"FA" = 0.4)
+	)
+	
+	year <- as.numeric(paste0("20", substr(unq_seasons, 3,4)))
+	
+	to_order <- year + tmp
+	
+	unq_seasons <- unq_seasons[order(to_order)]
+	
+	return(unq_seasons)
+	
+}
+
+# There are a few sites that should be within the city limits but are not
+#  This function pushes them to the nearest cell. A lot of this was 
+#  borrowed from rSDM::points2nearestcell(), though that package
+#  is not currently available in R version 4.0.3. 
+
+# locs = sf data.frame of spatial points
+# r = a single raster layer
+points_to_nearest_raster_cell <- function(
+	locs , r, distance = NULL ) {
+	pid <- raster::cellFromXY(
+		r,
+		sf::st_coordinates(locs)
+	)
+	
+	miss <- which(is.na(values(r)[pid]))
+	
+	## if there are NA cells...
+	
+	if (sum(miss) > 0) {
+		# points without data
+		coord_miss <- sf::st_coordinates(locs[miss, ])  
+		# get coordinates of cells with data
+		if (nlayers(r) > 1){
+			r <- raster::raster(r, 1)
+		}
+		cells_notNA <- raster::rasterToPoints(r, spatial = TRUE)  
+		coord_ras <- sp::coordinates(cells_notNA)
+		cell_id <- factor(seq_len(nrow(coord_ras)))
+		
+		# find the nearest raster cell for each point with missing data
+		nearest_cell <- class::knn1(coord_ras, coord_miss, cell_id)
+		
+		new_coords <- matrix(coord_ras[nearest_cell, ], ncol = 2)
+		colnames(new_coords) <- c("X", "Y")
+		
+		if (!is.null(distance)){
+			
+			# calculate distances between old and new coordinates
+			distances <- raster::pointDistance(
+				coord_miss, 
+				new_coords,
+				lonlat = raster::isLonLat(locs)
+			)
+			# if distance below threshold, accept, otherwise keep old coordinates
+			x <- ifelse(distances < distance, new_coords[,1], coord_miss[,1])
+			y <- ifelse(distances < distance, new_coords[,2], coord_miss[,2])
+			new_coords <- cbind(X = x, Y = y)
+			
+		}
+		
+		
+		# assign new coordinates to those points
+		og_coords <- sf::st_coordinates(locs)
+		og_coords[miss, ] <- new_coords
+		
+		new_geometry <- sf::st_as_sf(
+			data.frame(og_coords),
+			coords = c(1,2)
+		)
+		sf::st_geometry(locs) <- sf::st_geometry(new_geometry)
+		
+	} else message("All points fall within a raster cell")
+	
+	return(locs)
+	
+}

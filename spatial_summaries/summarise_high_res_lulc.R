@@ -13,7 +13,7 @@ library(fasterize)
 
 # read in the chicago data layer
 my_raster_path <- 
-	"../../GIS/cmap/landcover_2010_chicagoregion.img"
+	"D:/GIS/cmap/landcover_2010_chicagoregion.img"
 
 # read it in
 my_map <- raster::raster(
@@ -22,7 +22,7 @@ my_map <- raster::raster(
 
 # crop it down to Chicago
 city_outline <- sf::st_read(
-	"../../GIS/IL City Shape Files", 
+	"D:/GIS/IL City Shape Files", 
 	layer = "tl_2017_17_place"
 ) %>% 
 	select("NAME")
@@ -133,7 +133,7 @@ raster::writeRaster(
 
 # do the same thing but with the housing density data
 pop_data <- sf::st_read(
-	"../../GIS/housing_density", 
+	"D:/GIS/housing_density", 
 	layer = "il_blk10_Census_change_1990_2010_PLA2"
 ) %>% 
 	dplyr::select("HU10")
@@ -145,6 +145,11 @@ pop_data <- sf::st_transform(
 	sf::st_crs(
 		my_map
 	)
+)
+
+# fix any potential issues before cropping
+pop_data <- sf::st_make_valid(
+	pop_data
 )
 
 # crop it down to the chicago area
@@ -206,16 +211,74 @@ hu10_raster <- fasterize::fasterize(
 # save the rds
 saveRDS(
 	hu10_raster,
-	"./data/hu10_raster.RDS"
+	"./data/hu10_raster.rds"
 )
+
+# Bring in income 
+income <- raster::raster(
+	"./data/Final_Income_Raster.tif"
+)
+
+income <- raster::projectRaster(
+	income, 
+	chicago_stack
+)
+
+# mask values outside of Chicago
+income <- raster::mask(
+	income,
+	chicago
+)
+
+
+# bring in vacancy
+vacancy <- raster::raster(
+	"./data/Final_Vacancy_Raster.tif"
+)
+
+vacancy <- raster::projectRaster(
+	vacancy, 
+	chicago_stack
+)
+
+vacancy <- raster::mask(
+	vacancy,
+	chicago
+)
+
+# and distance to a natural water source
+water <- raster::raster(
+	"./data/Final_WaterDist_Raster.tif"
+)
+
+water <- projectRaster(
+	water,
+	chicago_stack
+)
+
+
+water <- raster::mask(
+	water,
+	chicago
+)
+
 
 # add it as another layer to the other rasters to make a final object
 all_raw_layers <- raster::stack(
 	chicago_stack,
-	hu10_raster
+	hu10_raster,
+	income,
+	vacancy,
+	water
 )
 
-colnames(values(all_raw_layers))[4] <- "houses"
+colnames(values(all_raw_layers))[4:7] <- c(
+	"houses",
+	"income",
+	"vacancy",
+	"dist2water"
+)
+
 
 saveRDS(
 	all_raw_layers,

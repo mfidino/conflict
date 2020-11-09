@@ -48,30 +48,56 @@ model{
 		for(year in 1:nyear){
 		logit(pa_det_prob[site, year]) <- inprod(pa_det_covs[pa_pixel[site],],
 																						 beta_pa_det[ , year])
-		pa_mu[site, year] <- z[pa_pixel[site], year] * pa_det_prob[site, year]
-		y_pa[site, year] ~ dbin(pa_mu[site, year], 4)
+		pres_abs_mu[site, year] <- z[pa_pixel[site], year] * pa_det_prob[site, year]
+		y_pa[site, year] ~ dbin(pres_abs_mu[site, year], J[site,year])
 		}
 	}
 	# priors for latent state
-	for(latent in 1:nlatent){
+	# temporal random effect
+	psi_mu ~ dlogis(0,1)
+	psi_tau_season ~ dgamma(1,1)
+	psi_sd_season <- 1 / sqrt(psi_tau_season)
+	lambda_beta_occ ~ dunif(0.001,10)
+	for(year in 1:nyear){
+		psi_season[year] ~ dnorm(psi_mu, psi_tau_season)
+		beta_occ[1, year] <- psi_season[year] 
+	}
+	for(latent in 2:nlatent){
+			beta_occ_fill[latent-1] ~ ddexp(0, lambda_beta_occ)
 		for(year in 1:nyear){
-			beta_occ[latent, year] ~ dlogis(0, 1)
+			beta_occ[latent,year] <- beta_occ_fill[latent-1]
 		}
 	}
 	# priors for presence absence observation 
-	#  currently does not vary by year
-	for(obs_pa in 1:nobs_pa){
-		beta_observation[obs_pa] ~ dlogis(0, 1)
+	# temporal random effect
+	pa_mu ~ dlogis(0,1)
+	pa_tau_season ~ dgamma(1,1)
+	pa_sd_season <- 1 / sqrt(pa_tau_season)
+	lambda_pa_det ~ dunif(0.001,10)
+	for(year in 1:nyear){
+		pa_season[year] ~ dnorm(pa_mu, pa_tau_season)
+		beta_pa_det[1, year] <- pa_season[year] 
+	}
+	for(obs_pa in 2:nobs_pa){
+		beta_observation[obs_pa-1] ~ ddexp(0, lambda_pa_det)
 		for(year in 1:nyear){
-			beta_pa_det[obs_pa, year] <- beta_observation[obs_pa]
+			beta_pa_det[obs_pa, year] <- beta_observation[obs_pa-1]
 		}
 	}
 	# priors for presence only observation
-	#  currently does not vary by year
-	for(obs_po in 1:nobs_po){
-		beta_po_fill[obs_po]  ~ dlogis(0, 1)
+	# temporal random effect
+	po_mu ~ dlogis(0,1)
+	po_tau_season ~ dgamma(1,1)
+	po_sd_season <- 1 / sqrt(po_tau_season)
+	lambda_po_det ~ dunif(0.001, 10)
+	for(year in 1:nyear){
+		po_season[year] ~ dnorm(po_mu, po_tau_season)
+		beta_po_det[1, year] <- po_season[year]
+	}
+	for(obs_po in 2:nobs_po){
+		beta_po_fill[obs_po-1]  ~ ddexp(0, lambda_po_det)
 		for(year in 1:nyear){
-			beta_po_det[obs_po, year] <- beta_po_fill[obs_po]
+			beta_po_det[obs_po, year] <- beta_po_fill[obs_po-1]
 		}
 	}
 	
