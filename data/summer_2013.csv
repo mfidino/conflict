@@ -1,0 +1,721 @@
+CommonName,locationAbbr,count,J
+Coyote,C04-MBP1,NA,0
+Coyote,C05-BMP1,NA,0
+Coyote,C05-BMP2,NA,0
+Coyote,C06-HMP1,NA,0
+Coyote,D02-BMT0,NA,0
+Coyote,D02-HUP0,0,24
+Coyote,D02-JBS1,0,31
+Coyote,D02-MBS0,0,27
+Coyote,D02-MDU1,0,11
+Coyote,D02-MOP1,0,27
+Coyote,D02-RCP1,2,27
+Coyote,D02-SCP1,0,27
+Coyote,D03-AFP1,0,27
+Coyote,D03-AMP1,0,27
+Coyote,D03-CHP1,0,27
+Coyote,D03-GOM1,0,26
+Coyote,D03-HOR1,NA,0
+Coyote,D03-MFP0,0,27
+Coyote,D03-NPV1,NA,0
+Coyote,D03-STB1,NA,0
+Coyote,D04-DNP1,1,27
+Coyote,D04-EDW0,1,27
+Coyote,D04-EVC0,1,27
+Coyote,D04-FGP1,0,27
+Coyote,D04-RDP1,0,27
+Coyote,D04-ROS0,NA,0
+Coyote,D05-ADC1,0,27
+Coyote,D05-BRP1,1,27
+Coyote,D05-MIA1,0,27
+Coyote,D05-PRC1,NA,0
+Coyote,D06-KCG1,0,16
+Coyote,D07-ASC0,2,31
+Coyote,D07-BEC0,0,31
+Coyote,D07-NOC1,0,1
+Coyote,D08-CCC1,0,31
+Coyote,D08-DAW0,NA,0
+Coyote,D08-DAW2,6,31
+Coyote,D09-CLG0,0,31
+Coyote,D09-RYW1,0,31
+Coyote,D09-VTC1,0,31
+Coyote,D10-CAN0,7,31
+Coyote,D10-MAC1,0,31
+Coyote,D10-VHC1,2,31
+Coyote,J01-BBS1,1,29
+Coyote,J01-CLP1,0,29
+Coyote,J01-LMP1,0,29
+Coyote,J01-NOR1,NA,0
+Coyote,J01-SEP1,0,29
+Coyote,J01-SKP1,0,29
+Coyote,J01-UIC1,0,29
+Coyote,R02-DPG1,0,29
+Coyote,R02-FRP1,0,29
+Coyote,R03-AUP1,0,29
+Coyote,R03-CPG1,3,29
+Coyote,R03-EUC1,0,29
+Coyote,R03-MAP1,1,14
+Coyote,R04-MMW0,2,29
+Coyote,R04-MMW3,NA,0
+Coyote,R04-SCH1,0,29
+Coyote,R05-FMG1,0,29
+Coyote,R05-GOC1,0,29
+Coyote,R05-MTC1,11,29
+Coyote,R05-STP1,0,29
+Coyote,R06-OTB1,2,29
+Coyote,R06-SLT1,0,29
+Coyote,R06-SLT2,0,29
+Coyote,R06-YOW1,1,29
+Coyote,R07-FSP1,0,30
+Coyote,R07-GOF1,9,30
+Coyote,R07-MMP1,0,29
+Coyote,R07-YHR1,0,29
+Coyote,R08-DAP1,2,29
+Coyote,R08-PAP1,0,30
+Coyote,R08-VLG1,5,30
+Coyote,R08-WBK1,3,30
+Coyote,R09-BLW1,0,29
+Coyote,R09-CTG0,NA,0
+Coyote,R09-LIM0,0,29
+Coyote,R09-SMI1,0,29
+Coyote,R10-FRM1,1,29
+Coyote,R10-FRM2,0,29
+Coyote,R10-WCP0,13,29
+Coyote,R10-WDW0,12,29
+Coyote,S02-BNS1,0,29
+Coyote,S02-BRI1,0,29
+Coyote,S02-MCP1,0,21
+Coyote,S02-PIP1,0,15
+Coyote,S02-PLP1,NA,0
+Coyote,S02-TNE1,NA,0
+Coyote,S02-TNW1,NA,0
+Coyote,S03-JKP1,0,29
+Coyote,S03-JKP2,0,29
+Coyote,S03-LCP1,0,29
+Coyote,S03-PSP1,NA,0
+Coyote,S03-VIP1,0,29
+Coyote,S03-WAP1,0,29
+Coyote,S04-HAP1,0,29
+Coyote,S04-OTW1,1,29
+Coyote,S04-SSP1,0,29
+Coyote,S05-LNC1,2,29
+Coyote,S05-RES1,1,29
+Coyote,S05-SFP0,0,29
+Coyote,S05-SFP3,NA,0
+Coyote,S06-CBW1,5,29
+Coyote,S06-CBW2,NA,0
+Coyote,S07-ARG1,NA,0
+Coyote,S07-ARG2,NA,0
+Coyote,S07-SAG1,5,29
+Coyote,S07-STJ1,3,29
+Coyote,S07-WGL0,2,29
+Coyote,S08-WGL1,2,29
+Coyote,S08-WGL2,0,29
+Coyote,S09-ILC1,0,29
+Coyote,S09-KTP1,1,29
+Coyote,S09-SMC1,2,29
+Coyote,S09-VTW0,0,18
+Coyote,S10-ILC1,0,29
+Coyote,S10-LEW1,3,29
+Coyote,S10-LPC1,0,29
+Coyote,S10-LPP0,3,29
+Eastern cottontail rabbit,C04-MBP1,NA,0
+Eastern cottontail rabbit,C05-BMP1,NA,0
+Eastern cottontail rabbit,C05-BMP2,NA,0
+Eastern cottontail rabbit,C06-HMP1,NA,0
+Eastern cottontail rabbit,D02-BMT0,NA,0
+Eastern cottontail rabbit,D02-HUP0,1,24
+Eastern cottontail rabbit,D02-JBS1,12,31
+Eastern cottontail rabbit,D02-MBS0,0,27
+Eastern cottontail rabbit,D02-MDU1,1,11
+Eastern cottontail rabbit,D02-MOP1,0,27
+Eastern cottontail rabbit,D02-RCP1,4,27
+Eastern cottontail rabbit,D02-SCP1,0,27
+Eastern cottontail rabbit,D03-AFP1,5,27
+Eastern cottontail rabbit,D03-AMP1,0,27
+Eastern cottontail rabbit,D03-CHP1,1,27
+Eastern cottontail rabbit,D03-GOM1,0,26
+Eastern cottontail rabbit,D03-HOR1,NA,0
+Eastern cottontail rabbit,D03-MFP0,1,27
+Eastern cottontail rabbit,D03-NPV1,NA,0
+Eastern cottontail rabbit,D03-STB1,NA,0
+Eastern cottontail rabbit,D04-DNP1,1,27
+Eastern cottontail rabbit,D04-EDW0,0,27
+Eastern cottontail rabbit,D04-EVC0,0,27
+Eastern cottontail rabbit,D04-FGP1,3,27
+Eastern cottontail rabbit,D04-RDP1,0,27
+Eastern cottontail rabbit,D04-ROS0,NA,0
+Eastern cottontail rabbit,D05-ADC1,3,27
+Eastern cottontail rabbit,D05-BRP1,0,27
+Eastern cottontail rabbit,D05-MIA1,0,27
+Eastern cottontail rabbit,D05-PRC1,NA,0
+Eastern cottontail rabbit,D06-KCG1,0,16
+Eastern cottontail rabbit,D07-ASC0,0,31
+Eastern cottontail rabbit,D07-BEC0,0,31
+Eastern cottontail rabbit,D07-NOC1,0,1
+Eastern cottontail rabbit,D08-CCC1,0,31
+Eastern cottontail rabbit,D08-DAW0,NA,0
+Eastern cottontail rabbit,D08-DAW2,1,31
+Eastern cottontail rabbit,D09-CLG0,0,31
+Eastern cottontail rabbit,D09-RYW1,0,31
+Eastern cottontail rabbit,D09-VTC1,2,31
+Eastern cottontail rabbit,D10-CAN0,0,31
+Eastern cottontail rabbit,D10-MAC1,0,31
+Eastern cottontail rabbit,D10-VHC1,0,31
+Eastern cottontail rabbit,J01-BBS1,0,29
+Eastern cottontail rabbit,J01-CLP1,0,29
+Eastern cottontail rabbit,J01-LMP1,0,29
+Eastern cottontail rabbit,J01-NOR1,NA,0
+Eastern cottontail rabbit,J01-SEP1,0,29
+Eastern cottontail rabbit,J01-SKP1,1,29
+Eastern cottontail rabbit,J01-UIC1,24,29
+Eastern cottontail rabbit,R02-DPG1,4,29
+Eastern cottontail rabbit,R02-FRP1,0,29
+Eastern cottontail rabbit,R03-AUP1,0,29
+Eastern cottontail rabbit,R03-CPG1,0,29
+Eastern cottontail rabbit,R03-EUC1,0,29
+Eastern cottontail rabbit,R03-MAP1,2,14
+Eastern cottontail rabbit,R04-MMW0,4,29
+Eastern cottontail rabbit,R04-MMW3,NA,0
+Eastern cottontail rabbit,R04-SCH1,9,29
+Eastern cottontail rabbit,R05-FMG1,0,29
+Eastern cottontail rabbit,R05-GOC1,0,29
+Eastern cottontail rabbit,R05-MTC1,0,29
+Eastern cottontail rabbit,R05-STP1,0,29
+Eastern cottontail rabbit,R06-OTB1,0,29
+Eastern cottontail rabbit,R06-SLT1,2,29
+Eastern cottontail rabbit,R06-SLT2,1,29
+Eastern cottontail rabbit,R06-YOW1,0,29
+Eastern cottontail rabbit,R07-FSP1,2,30
+Eastern cottontail rabbit,R07-GOF1,1,30
+Eastern cottontail rabbit,R07-MMP1,0,29
+Eastern cottontail rabbit,R07-YHR1,0,29
+Eastern cottontail rabbit,R08-DAP1,10,29
+Eastern cottontail rabbit,R08-PAP1,3,30
+Eastern cottontail rabbit,R08-VLG1,13,30
+Eastern cottontail rabbit,R08-WBK1,3,30
+Eastern cottontail rabbit,R09-BLW1,14,29
+Eastern cottontail rabbit,R09-CTG0,NA,0
+Eastern cottontail rabbit,R09-LIM0,4,29
+Eastern cottontail rabbit,R09-SMI1,11,29
+Eastern cottontail rabbit,R10-FRM1,0,29
+Eastern cottontail rabbit,R10-FRM2,0,29
+Eastern cottontail rabbit,R10-WCP0,1,29
+Eastern cottontail rabbit,R10-WDW0,0,29
+Eastern cottontail rabbit,S02-BNS1,0,29
+Eastern cottontail rabbit,S02-BRI1,0,29
+Eastern cottontail rabbit,S02-MCP1,0,21
+Eastern cottontail rabbit,S02-PIP1,0,15
+Eastern cottontail rabbit,S02-PLP1,NA,0
+Eastern cottontail rabbit,S02-TNE1,NA,0
+Eastern cottontail rabbit,S02-TNW1,NA,0
+Eastern cottontail rabbit,S03-JKP1,0,29
+Eastern cottontail rabbit,S03-JKP2,1,29
+Eastern cottontail rabbit,S03-LCP1,0,29
+Eastern cottontail rabbit,S03-PSP1,NA,0
+Eastern cottontail rabbit,S03-VIP1,0,29
+Eastern cottontail rabbit,S03-WAP1,15,29
+Eastern cottontail rabbit,S04-HAP1,0,29
+Eastern cottontail rabbit,S04-OTW1,0,29
+Eastern cottontail rabbit,S04-SSP1,6,29
+Eastern cottontail rabbit,S05-LNC1,0,29
+Eastern cottontail rabbit,S05-RES1,1,29
+Eastern cottontail rabbit,S05-SFP0,1,29
+Eastern cottontail rabbit,S05-SFP3,NA,0
+Eastern cottontail rabbit,S06-CBW1,0,29
+Eastern cottontail rabbit,S06-CBW2,NA,0
+Eastern cottontail rabbit,S07-ARG1,NA,0
+Eastern cottontail rabbit,S07-ARG2,NA,0
+Eastern cottontail rabbit,S07-SAG1,6,29
+Eastern cottontail rabbit,S07-STJ1,0,29
+Eastern cottontail rabbit,S07-WGL0,1,29
+Eastern cottontail rabbit,S08-WGL1,0,29
+Eastern cottontail rabbit,S08-WGL2,0,29
+Eastern cottontail rabbit,S09-ILC1,0,29
+Eastern cottontail rabbit,S09-KTP1,0,29
+Eastern cottontail rabbit,S09-SMC1,0,29
+Eastern cottontail rabbit,S09-VTW0,0,18
+Eastern cottontail rabbit,S10-ILC1,0,29
+Eastern cottontail rabbit,S10-LEW1,2,29
+Eastern cottontail rabbit,S10-LPC1,4,29
+Eastern cottontail rabbit,S10-LPP0,0,29
+Raccoon,C04-MBP1,NA,0
+Raccoon,C05-BMP1,NA,0
+Raccoon,C05-BMP2,NA,0
+Raccoon,C06-HMP1,NA,0
+Raccoon,D02-BMT0,NA,0
+Raccoon,D02-HUP0,3,24
+Raccoon,D02-JBS1,31,31
+Raccoon,D02-MBS0,1,27
+Raccoon,D02-MDU1,0,11
+Raccoon,D02-MOP1,0,27
+Raccoon,D02-RCP1,0,27
+Raccoon,D02-SCP1,0,27
+Raccoon,D03-AFP1,0,27
+Raccoon,D03-AMP1,0,27
+Raccoon,D03-CHP1,0,27
+Raccoon,D03-GOM1,6,26
+Raccoon,D03-HOR1,NA,0
+Raccoon,D03-MFP0,0,27
+Raccoon,D03-NPV1,NA,0
+Raccoon,D03-STB1,NA,0
+Raccoon,D04-DNP1,0,27
+Raccoon,D04-EDW0,17,27
+Raccoon,D04-EVC0,22,27
+Raccoon,D04-FGP1,0,27
+Raccoon,D04-RDP1,0,27
+Raccoon,D04-ROS0,NA,0
+Raccoon,D05-ADC1,12,27
+Raccoon,D05-BRP1,0,27
+Raccoon,D05-MIA1,15,27
+Raccoon,D05-PRC1,NA,0
+Raccoon,D06-KCG1,0,16
+Raccoon,D07-ASC0,2,31
+Raccoon,D07-BEC0,9,31
+Raccoon,D07-NOC1,0,1
+Raccoon,D08-CCC1,7,31
+Raccoon,D08-DAW0,NA,0
+Raccoon,D08-DAW2,17,31
+Raccoon,D09-CLG0,9,31
+Raccoon,D09-RYW1,3,31
+Raccoon,D09-VTC1,19,31
+Raccoon,D10-CAN0,20,31
+Raccoon,D10-MAC1,0,31
+Raccoon,D10-VHC1,6,31
+Raccoon,J01-BBS1,1,29
+Raccoon,J01-CLP1,0,29
+Raccoon,J01-LMP1,0,29
+Raccoon,J01-NOR1,NA,0
+Raccoon,J01-SEP1,0,29
+Raccoon,J01-SKP1,0,29
+Raccoon,J01-UIC1,2,29
+Raccoon,R02-DPG1,6,29
+Raccoon,R02-FRP1,0,29
+Raccoon,R03-AUP1,4,29
+Raccoon,R03-CPG1,0,29
+Raccoon,R03-EUC1,1,29
+Raccoon,R03-MAP1,1,14
+Raccoon,R04-MMW0,4,29
+Raccoon,R04-MMW3,NA,0
+Raccoon,R04-SCH1,2,29
+Raccoon,R05-FMG1,0,29
+Raccoon,R05-GOC1,0,29
+Raccoon,R05-MTC1,9,29
+Raccoon,R05-STP1,22,29
+Raccoon,R06-OTB1,5,29
+Raccoon,R06-SLT1,10,29
+Raccoon,R06-SLT2,23,29
+Raccoon,R06-YOW1,1,29
+Raccoon,R07-FSP1,1,30
+Raccoon,R07-GOF1,3,30
+Raccoon,R07-MMP1,0,29
+Raccoon,R07-YHR1,1,29
+Raccoon,R08-DAP1,6,29
+Raccoon,R08-PAP1,5,30
+Raccoon,R08-VLG1,15,30
+Raccoon,R08-WBK1,11,30
+Raccoon,R09-BLW1,16,29
+Raccoon,R09-CTG0,NA,0
+Raccoon,R09-LIM0,19,29
+Raccoon,R09-SMI1,0,29
+Raccoon,R10-FRM1,8,29
+Raccoon,R10-FRM2,1,29
+Raccoon,R10-WCP0,0,29
+Raccoon,R10-WDW0,1,29
+Raccoon,S02-BNS1,0,29
+Raccoon,S02-BRI1,0,29
+Raccoon,S02-MCP1,0,21
+Raccoon,S02-PIP1,0,15
+Raccoon,S02-PLP1,NA,0
+Raccoon,S02-TNE1,NA,0
+Raccoon,S02-TNW1,NA,0
+Raccoon,S03-JKP1,13,29
+Raccoon,S03-JKP2,14,29
+Raccoon,S03-LCP1,1,29
+Raccoon,S03-PSP1,NA,0
+Raccoon,S03-VIP1,0,29
+Raccoon,S03-WAP1,0,29
+Raccoon,S04-HAP1,0,29
+Raccoon,S04-OTW1,18,29
+Raccoon,S04-SSP1,0,29
+Raccoon,S05-LNC1,6,29
+Raccoon,S05-RES1,5,29
+Raccoon,S05-SFP0,3,29
+Raccoon,S05-SFP3,NA,0
+Raccoon,S06-CBW1,1,29
+Raccoon,S06-CBW2,NA,0
+Raccoon,S07-ARG1,NA,0
+Raccoon,S07-ARG2,NA,0
+Raccoon,S07-SAG1,3,29
+Raccoon,S07-STJ1,1,29
+Raccoon,S07-WGL0,3,29
+Raccoon,S08-WGL1,10,29
+Raccoon,S08-WGL2,0,29
+Raccoon,S09-ILC1,1,29
+Raccoon,S09-KTP1,9,29
+Raccoon,S09-SMC1,0,29
+Raccoon,S09-VTW0,0,18
+Raccoon,S10-ILC1,3,29
+Raccoon,S10-LEW1,10,29
+Raccoon,S10-LPC1,5,29
+Raccoon,S10-LPP0,7,29
+Red fox,C04-MBP1,NA,0
+Red fox,C05-BMP1,NA,0
+Red fox,C05-BMP2,NA,0
+Red fox,C06-HMP1,NA,0
+Red fox,D02-BMT0,NA,0
+Red fox,D02-HUP0,0,24
+Red fox,D02-JBS1,0,31
+Red fox,D02-MBS0,0,27
+Red fox,D02-MDU1,0,11
+Red fox,D02-MOP1,0,27
+Red fox,D02-RCP1,0,27
+Red fox,D02-SCP1,0,27
+Red fox,D03-AFP1,0,27
+Red fox,D03-AMP1,0,27
+Red fox,D03-CHP1,0,27
+Red fox,D03-GOM1,0,26
+Red fox,D03-HOR1,NA,0
+Red fox,D03-MFP0,0,27
+Red fox,D03-NPV1,NA,0
+Red fox,D03-STB1,NA,0
+Red fox,D04-DNP1,0,27
+Red fox,D04-EDW0,0,27
+Red fox,D04-EVC0,0,27
+Red fox,D04-FGP1,0,27
+Red fox,D04-RDP1,0,27
+Red fox,D04-ROS0,NA,0
+Red fox,D05-ADC1,0,27
+Red fox,D05-BRP1,0,27
+Red fox,D05-MIA1,0,27
+Red fox,D05-PRC1,NA,0
+Red fox,D06-KCG1,0,16
+Red fox,D07-ASC0,0,31
+Red fox,D07-BEC0,0,31
+Red fox,D07-NOC1,0,1
+Red fox,D08-CCC1,0,31
+Red fox,D08-DAW0,NA,0
+Red fox,D08-DAW2,0,31
+Red fox,D09-CLG0,0,31
+Red fox,D09-RYW1,0,31
+Red fox,D09-VTC1,0,31
+Red fox,D10-CAN0,0,31
+Red fox,D10-MAC1,0,31
+Red fox,D10-VHC1,0,31
+Red fox,J01-BBS1,0,29
+Red fox,J01-CLP1,0,29
+Red fox,J01-LMP1,0,29
+Red fox,J01-NOR1,NA,0
+Red fox,J01-SEP1,0,29
+Red fox,J01-SKP1,0,29
+Red fox,J01-UIC1,0,29
+Red fox,R02-DPG1,0,29
+Red fox,R02-FRP1,0,29
+Red fox,R03-AUP1,0,29
+Red fox,R03-CPG1,0,29
+Red fox,R03-EUC1,0,29
+Red fox,R03-MAP1,0,14
+Red fox,R04-MMW0,0,29
+Red fox,R04-MMW3,NA,0
+Red fox,R04-SCH1,1,29
+Red fox,R05-FMG1,0,29
+Red fox,R05-GOC1,0,29
+Red fox,R05-MTC1,0,29
+Red fox,R05-STP1,0,29
+Red fox,R06-OTB1,0,29
+Red fox,R06-SLT1,0,29
+Red fox,R06-SLT2,0,29
+Red fox,R06-YOW1,0,29
+Red fox,R07-FSP1,0,30
+Red fox,R07-GOF1,0,30
+Red fox,R07-MMP1,0,29
+Red fox,R07-YHR1,0,29
+Red fox,R08-DAP1,0,29
+Red fox,R08-PAP1,0,30
+Red fox,R08-VLG1,0,30
+Red fox,R08-WBK1,0,30
+Red fox,R09-BLW1,0,29
+Red fox,R09-CTG0,NA,0
+Red fox,R09-LIM0,0,29
+Red fox,R09-SMI1,0,29
+Red fox,R10-FRM1,0,29
+Red fox,R10-FRM2,0,29
+Red fox,R10-WCP0,0,29
+Red fox,R10-WDW0,0,29
+Red fox,S02-BNS1,0,29
+Red fox,S02-BRI1,0,29
+Red fox,S02-MCP1,0,21
+Red fox,S02-PIP1,0,15
+Red fox,S02-PLP1,NA,0
+Red fox,S02-TNE1,NA,0
+Red fox,S02-TNW1,NA,0
+Red fox,S03-JKP1,0,29
+Red fox,S03-JKP2,0,29
+Red fox,S03-LCP1,0,29
+Red fox,S03-PSP1,NA,0
+Red fox,S03-VIP1,0,29
+Red fox,S03-WAP1,0,29
+Red fox,S04-HAP1,0,29
+Red fox,S04-OTW1,0,29
+Red fox,S04-SSP1,0,29
+Red fox,S05-LNC1,0,29
+Red fox,S05-RES1,0,29
+Red fox,S05-SFP0,0,29
+Red fox,S05-SFP3,NA,0
+Red fox,S06-CBW1,0,29
+Red fox,S06-CBW2,NA,0
+Red fox,S07-ARG1,NA,0
+Red fox,S07-ARG2,NA,0
+Red fox,S07-SAG1,0,29
+Red fox,S07-STJ1,0,29
+Red fox,S07-WGL0,0,29
+Red fox,S08-WGL1,12,29
+Red fox,S08-WGL2,0,29
+Red fox,S09-ILC1,0,29
+Red fox,S09-KTP1,0,29
+Red fox,S09-SMC1,0,29
+Red fox,S09-VTW0,0,18
+Red fox,S10-ILC1,0,29
+Red fox,S10-LEW1,0,29
+Red fox,S10-LPC1,1,29
+Red fox,S10-LPP0,0,29
+Striped Skunk,C04-MBP1,NA,0
+Striped Skunk,C05-BMP1,NA,0
+Striped Skunk,C05-BMP2,NA,0
+Striped Skunk,C06-HMP1,NA,0
+Striped Skunk,D02-BMT0,NA,0
+Striped Skunk,D02-HUP0,0,24
+Striped Skunk,D02-JBS1,0,31
+Striped Skunk,D02-MBS0,0,27
+Striped Skunk,D02-MDU1,0,11
+Striped Skunk,D02-MOP1,0,27
+Striped Skunk,D02-RCP1,0,27
+Striped Skunk,D02-SCP1,0,27
+Striped Skunk,D03-AFP1,0,27
+Striped Skunk,D03-AMP1,1,27
+Striped Skunk,D03-CHP1,0,27
+Striped Skunk,D03-GOM1,0,26
+Striped Skunk,D03-HOR1,NA,0
+Striped Skunk,D03-MFP0,0,27
+Striped Skunk,D03-NPV1,NA,0
+Striped Skunk,D03-STB1,NA,0
+Striped Skunk,D04-DNP1,0,27
+Striped Skunk,D04-EDW0,0,27
+Striped Skunk,D04-EVC0,0,27
+Striped Skunk,D04-FGP1,0,27
+Striped Skunk,D04-RDP1,0,27
+Striped Skunk,D04-ROS0,NA,0
+Striped Skunk,D05-ADC1,14,27
+Striped Skunk,D05-BRP1,0,27
+Striped Skunk,D05-MIA1,1,27
+Striped Skunk,D05-PRC1,NA,0
+Striped Skunk,D06-KCG1,0,16
+Striped Skunk,D07-ASC0,1,31
+Striped Skunk,D07-BEC0,0,31
+Striped Skunk,D07-NOC1,0,1
+Striped Skunk,D08-CCC1,6,31
+Striped Skunk,D08-DAW0,NA,0
+Striped Skunk,D08-DAW2,0,31
+Striped Skunk,D09-CLG0,1,31
+Striped Skunk,D09-RYW1,0,31
+Striped Skunk,D09-VTC1,3,31
+Striped Skunk,D10-CAN0,0,31
+Striped Skunk,D10-MAC1,0,31
+Striped Skunk,D10-VHC1,3,31
+Striped Skunk,J01-BBS1,0,29
+Striped Skunk,J01-CLP1,0,29
+Striped Skunk,J01-LMP1,0,29
+Striped Skunk,J01-NOR1,NA,0
+Striped Skunk,J01-SEP1,0,29
+Striped Skunk,J01-SKP1,0,29
+Striped Skunk,J01-UIC1,0,29
+Striped Skunk,R02-DPG1,0,29
+Striped Skunk,R02-FRP1,0,29
+Striped Skunk,R03-AUP1,0,29
+Striped Skunk,R03-CPG1,0,29
+Striped Skunk,R03-EUC1,0,29
+Striped Skunk,R03-MAP1,0,14
+Striped Skunk,R04-MMW0,2,29
+Striped Skunk,R04-MMW3,NA,0
+Striped Skunk,R04-SCH1,0,29
+Striped Skunk,R05-FMG1,0,29
+Striped Skunk,R05-GOC1,0,29
+Striped Skunk,R05-MTC1,0,29
+Striped Skunk,R05-STP1,0,29
+Striped Skunk,R06-OTB1,5,29
+Striped Skunk,R06-SLT1,0,29
+Striped Skunk,R06-SLT2,0,29
+Striped Skunk,R06-YOW1,0,29
+Striped Skunk,R07-FSP1,5,30
+Striped Skunk,R07-GOF1,0,30
+Striped Skunk,R07-MMP1,0,29
+Striped Skunk,R07-YHR1,0,29
+Striped Skunk,R08-DAP1,0,29
+Striped Skunk,R08-PAP1,1,30
+Striped Skunk,R08-VLG1,0,30
+Striped Skunk,R08-WBK1,0,30
+Striped Skunk,R09-BLW1,0,29
+Striped Skunk,R09-CTG0,NA,0
+Striped Skunk,R09-LIM0,5,29
+Striped Skunk,R09-SMI1,3,29
+Striped Skunk,R10-FRM1,0,29
+Striped Skunk,R10-FRM2,0,29
+Striped Skunk,R10-WCP0,0,29
+Striped Skunk,R10-WDW0,0,29
+Striped Skunk,S02-BNS1,0,29
+Striped Skunk,S02-BRI1,0,29
+Striped Skunk,S02-MCP1,0,21
+Striped Skunk,S02-PIP1,0,15
+Striped Skunk,S02-PLP1,NA,0
+Striped Skunk,S02-TNE1,NA,0
+Striped Skunk,S02-TNW1,NA,0
+Striped Skunk,S03-JKP1,0,29
+Striped Skunk,S03-JKP2,0,29
+Striped Skunk,S03-LCP1,0,29
+Striped Skunk,S03-PSP1,NA,0
+Striped Skunk,S03-VIP1,0,29
+Striped Skunk,S03-WAP1,0,29
+Striped Skunk,S04-HAP1,0,29
+Striped Skunk,S04-OTW1,1,29
+Striped Skunk,S04-SSP1,0,29
+Striped Skunk,S05-LNC1,0,29
+Striped Skunk,S05-RES1,0,29
+Striped Skunk,S05-SFP0,0,29
+Striped Skunk,S05-SFP3,NA,0
+Striped Skunk,S06-CBW1,0,29
+Striped Skunk,S06-CBW2,NA,0
+Striped Skunk,S07-ARG1,NA,0
+Striped Skunk,S07-ARG2,NA,0
+Striped Skunk,S07-SAG1,0,29
+Striped Skunk,S07-STJ1,0,29
+Striped Skunk,S07-WGL0,1,29
+Striped Skunk,S08-WGL1,1,29
+Striped Skunk,S08-WGL2,0,29
+Striped Skunk,S09-ILC1,0,29
+Striped Skunk,S09-KTP1,0,29
+Striped Skunk,S09-SMC1,0,29
+Striped Skunk,S09-VTW0,0,18
+Striped Skunk,S10-ILC1,0,29
+Striped Skunk,S10-LEW1,1,29
+Striped Skunk,S10-LPC1,0,29
+Striped Skunk,S10-LPP0,0,29
+Virginia opossum,C04-MBP1,NA,0
+Virginia opossum,C05-BMP1,NA,0
+Virginia opossum,C05-BMP2,NA,0
+Virginia opossum,C06-HMP1,NA,0
+Virginia opossum,D02-BMT0,NA,0
+Virginia opossum,D02-HUP0,0,24
+Virginia opossum,D02-JBS1,2,31
+Virginia opossum,D02-MBS0,0,27
+Virginia opossum,D02-MDU1,0,11
+Virginia opossum,D02-MOP1,0,27
+Virginia opossum,D02-RCP1,5,27
+Virginia opossum,D02-SCP1,0,27
+Virginia opossum,D03-AFP1,0,27
+Virginia opossum,D03-AMP1,0,27
+Virginia opossum,D03-CHP1,0,27
+Virginia opossum,D03-GOM1,0,26
+Virginia opossum,D03-HOR1,NA,0
+Virginia opossum,D03-MFP0,0,27
+Virginia opossum,D03-NPV1,NA,0
+Virginia opossum,D03-STB1,NA,0
+Virginia opossum,D04-DNP1,0,27
+Virginia opossum,D04-EDW0,1,27
+Virginia opossum,D04-EVC0,19,27
+Virginia opossum,D04-FGP1,0,27
+Virginia opossum,D04-RDP1,0,27
+Virginia opossum,D04-ROS0,NA,0
+Virginia opossum,D05-ADC1,16,27
+Virginia opossum,D05-BRP1,0,27
+Virginia opossum,D05-MIA1,5,27
+Virginia opossum,D05-PRC1,NA,0
+Virginia opossum,D06-KCG1,0,16
+Virginia opossum,D07-ASC0,0,31
+Virginia opossum,D07-BEC0,2,31
+Virginia opossum,D07-NOC1,0,1
+Virginia opossum,D08-CCC1,5,31
+Virginia opossum,D08-DAW0,NA,0
+Virginia opossum,D08-DAW2,3,31
+Virginia opossum,D09-CLG0,0,31
+Virginia opossum,D09-RYW1,6,31
+Virginia opossum,D09-VTC1,1,31
+Virginia opossum,D10-CAN0,1,31
+Virginia opossum,D10-MAC1,0,31
+Virginia opossum,D10-VHC1,1,31
+Virginia opossum,J01-BBS1,0,29
+Virginia opossum,J01-CLP1,0,29
+Virginia opossum,J01-LMP1,0,29
+Virginia opossum,J01-NOR1,NA,0
+Virginia opossum,J01-SEP1,0,29
+Virginia opossum,J01-SKP1,0,29
+Virginia opossum,J01-UIC1,0,29
+Virginia opossum,R02-DPG1,0,29
+Virginia opossum,R02-FRP1,0,29
+Virginia opossum,R03-AUP1,5,29
+Virginia opossum,R03-CPG1,0,29
+Virginia opossum,R03-EUC1,0,29
+Virginia opossum,R03-MAP1,0,14
+Virginia opossum,R04-MMW0,3,29
+Virginia opossum,R04-MMW3,NA,0
+Virginia opossum,R04-SCH1,5,29
+Virginia opossum,R05-FMG1,0,29
+Virginia opossum,R05-GOC1,0,29
+Virginia opossum,R05-MTC1,19,29
+Virginia opossum,R05-STP1,7,29
+Virginia opossum,R06-OTB1,4,29
+Virginia opossum,R06-SLT1,0,29
+Virginia opossum,R06-SLT2,16,29
+Virginia opossum,R06-YOW1,0,29
+Virginia opossum,R07-FSP1,0,30
+Virginia opossum,R07-GOF1,3,30
+Virginia opossum,R07-MMP1,0,29
+Virginia opossum,R07-YHR1,0,29
+Virginia opossum,R08-DAP1,4,29
+Virginia opossum,R08-PAP1,14,30
+Virginia opossum,R08-VLG1,0,30
+Virginia opossum,R08-WBK1,2,30
+Virginia opossum,R09-BLW1,13,29
+Virginia opossum,R09-CTG0,NA,0
+Virginia opossum,R09-LIM0,12,29
+Virginia opossum,R09-SMI1,0,29
+Virginia opossum,R10-FRM1,10,29
+Virginia opossum,R10-FRM2,0,29
+Virginia opossum,R10-WCP0,1,29
+Virginia opossum,R10-WDW0,8,29
+Virginia opossum,S02-BNS1,0,29
+Virginia opossum,S02-BRI1,0,29
+Virginia opossum,S02-MCP1,0,21
+Virginia opossum,S02-PIP1,0,15
+Virginia opossum,S02-PLP1,NA,0
+Virginia opossum,S02-TNE1,NA,0
+Virginia opossum,S02-TNW1,NA,0
+Virginia opossum,S03-JKP1,0,29
+Virginia opossum,S03-JKP2,2,29
+Virginia opossum,S03-LCP1,0,29
+Virginia opossum,S03-PSP1,NA,0
+Virginia opossum,S03-VIP1,0,29
+Virginia opossum,S03-WAP1,7,29
+Virginia opossum,S04-HAP1,0,29
+Virginia opossum,S04-OTW1,6,29
+Virginia opossum,S04-SSP1,0,29
+Virginia opossum,S05-LNC1,8,29
+Virginia opossum,S05-RES1,1,29
+Virginia opossum,S05-SFP0,0,29
+Virginia opossum,S05-SFP3,NA,0
+Virginia opossum,S06-CBW1,1,29
+Virginia opossum,S06-CBW2,NA,0
+Virginia opossum,S07-ARG1,NA,0
+Virginia opossum,S07-ARG2,NA,0
+Virginia opossum,S07-SAG1,5,29
+Virginia opossum,S07-STJ1,0,29
+Virginia opossum,S07-WGL0,2,29
+Virginia opossum,S08-WGL1,4,29
+Virginia opossum,S08-WGL2,0,29
+Virginia opossum,S09-ILC1,0,29
+Virginia opossum,S09-KTP1,3,29
+Virginia opossum,S09-SMC1,0,29
+Virginia opossum,S09-VTW0,0,18
+Virginia opossum,S10-ILC1,0,29
+Virginia opossum,S10-LEW1,6,29
+Virginia opossum,S10-LPC1,5,29
+Virginia opossum,S10-LPP0,1,29
