@@ -233,7 +233,7 @@ income <- raster::mask(
 
 # bring in vacancy
 vacancy <- raster::raster(
-	"./data/Final_Vacancy_Raster.tif"
+	"./data/Vacancy_311.tif"
 )
 
 vacancy <- raster::projectRaster(

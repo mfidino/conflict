@@ -131,7 +131,7 @@ if(do_plots){
 }
 
 # aggregate down to the smaller scale for presence / absence sampling
-agg_factor <- 10
+agg_factor <- 30
 agg_plane <- raster::aggregate(
 	plane,
 	fact = agg_factor
@@ -287,8 +287,8 @@ my_data <- list(
   # Number of seasons sampled
 	nyear = 3
 	)
-
-m2 <- run.jags(model = "integrated_pp_dynamic.R", 
+mstart1 <- Sys.time()
+m2 <- run.jags(model = "integrated_pp_simulate.R", 
 							 data = my_data, 
 							 n.chains = 6, 
 							 inits = inits, 
@@ -299,6 +299,23 @@ m2 <- run.jags(model = "integrated_pp_dynamic.R",
 							 thin = 5,
 							 method = 'parallel',
 							 summarise = FALSE)
+mtime1 <- Sys.time() - mstart1
+
+# try the faster one, saves about 6 minutes in this model run.
+
+mstart2 <- Sys.time()
+m3 <- run.jags(model = "integrated_pp_simulate_faster.R", 
+							 data = my_data, 
+							 n.chains = 6, 
+							 inits = inits, 
+							 monitor = c("beta_occ", "beta_po_det", "beta_pa_det"), 
+							 adapt = 1000, 
+							 burnin = 2000, 
+							 sample = 3000,
+							 thin = 5,
+							 method = 'parallel',
+							 summarise = FALSE)
+mtime2 <- Sys.time() - mstart2
 
 ##########################
 # summarize the two models

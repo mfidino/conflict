@@ -20,9 +20,13 @@ library(dplyr)
 # load utility script to bring some helper functions
 source("utility_script.R")
 
+species <- "coyote"
+
 # I've stored my api key in the keyring package so I don't
 #  store it in a text file. You can uncomment this following
 #  code once you have your google api set up
+# Assuming you have already set up the API, I went here
+# https://console.cloud.google.com/google/maps-apis/credentials
 
 ########################################
 # UNCOMMENT AND FILL IN YOUR API BELOW
@@ -54,32 +58,42 @@ ggmap::register_google(
 	account_type = "standard"
 )
 
-# Raccoon
 
 # bring in the clean data
-raccoon <- read.csv(
-	"./data/conflict_clean/raccoon.csv",
+my_data <- read.csv(
+	paste0("./data/conflict_clean/",species,".csv"),
 	stringsAsFactors = FALSE
 )
 
 # Add Chicago, Illinois to the block the conflict occurred.
-raccoon$block <- paste0(
-	raccoon$block,
+my_data$block <- paste0(
+	my_data$block,
 	", Chicago, Illinois"
 )
 
 # Use wrapper function I wrote for ggmap::geocode
-raccoon_geocoded <- geocode_wrapper(
-	data = raccoon,
+my_data_geocoded <- geocode_wrapper(
+	data = my_data,
 	address_column = "block"
 )
 
+
+# Check to see if there are any NA coordinates
+if(any(is.na(my_data_geocoded$lon))){
+  tmp <- geocode_wrapper(
+  	my_data[is.na(my_data_geocoded$lon),],
+  	address_column = "block"
+  )
+  tmp <- data.frame(tmp)
+  my_data_geocoded[is.na(my_data_geocoded$lon),c("lon", "lat")] <- 
+  	tmp[,c("lon", "lat")]
+}
+
 # save as a csv
 write.csv(
-	raccoon_geocoded,
-	"./data/conflict_clean/raccoon.csv",
+	my_data_geocoded,
+	paste0("./data/conflict_clean/", species,".csv"),
 	row.names = FALSE
 )
 	
-
 

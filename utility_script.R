@@ -97,53 +97,16 @@ drop_uncertain_species <- function(data, species){
 # A convience function to geocode data from the google api
 #   This is just so it can automatically run the queries each
 #   day at 6 AM.
-geocode_wrapper <- function(data, address_column){
-	# the number of records to geocode
-	ndata <- nrow(data)
-	# figure out number of days this will take at 2.5 K per day
-	ndays <- ceiling(ndata / 2500)
-	# spit out report
-	cat(paste("This will take", ndays, "days to geocode these data...\n"))
+geocode_wrapper <- function(
+	data,
+	address_column){
 	cat("Starting geocode process...\n")
-	# split into batches
-	code_groups <- factor((1:nrow(data) %/% 2500))
-	data <- split(data, f = code_groups)
-	batch <- 1
-	while(batch < ndays){
 		# do the geocoding
-		ans <- ggmap::geocode(as.character(data[[batch]][,address_column]))
+		ans <- ggmap::geocode(as.character(data[,address_column]))
+		ans <- data.frame(ans)
 		data$lon <- ans$lon
 		data$lat <- ans$lat
-		# get current time
-		time <- lubridate::ymd_hms(Sys.time())
-		# get 6 AM tomorrow
-		tomorrow <- paste(
-			lubridate::today() + 1,
-			"06:00:00 UTC"
-		)
-		# calculate time to the next day
-		time_to_tomorrow <- difftime( 
-			lubridate::ymd_hms(
-				tomorrow
-			),
-			time,
-			units = "secs"
-		)
-		# Go to sleep if more to do, stop this while statement by
-		#  incrementing batch to > ndays.
-		if(batch < ndays){
-			cat(paste("Batch", batch,"of",ndays, "complete.",
-								"Going to sleep until", tomorrow,"..."))
-			Sys.sleep(as.numeric(time_to_tomorrow))
-			batch <- batch + 1
-		} else {
-			cat(paste("Batch", batch,"of",ndays, "complete."))
-			batch <- batch + 1
-		}
-	}
-	# return the data
-	to_return <- dplyr::bind_rows(data)
-	return(to_return)
+	return(data)
 }
 
 ######################
@@ -215,7 +178,7 @@ points_to_nearest_raster_cell <- function(
 		sf::st_coordinates(locs)
 	)
 	
-	miss <- which(is.na(values(r)[pid]))
+	miss <- which(is.na(raster::values(r)[pid]))
 	
 	## if there are NA cells...
 	

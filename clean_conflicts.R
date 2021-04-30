@@ -28,3 +28,28 @@ raccoon <- read.csv(
 
 # clean the data
 
+
+opossum <- read.csv(
+	file = "./data/conflicts_raw/opossum.csv",
+	stringsAsFactors = FALSE
+) %>% 
+	update_foia_columns()
+
+# drop the first 3 rows
+opossum <- opossum[-c(1:3),]
+
+opossum <- read.csv("./data/conflict_clean/opossum.csv")
+
+drop_uncertain_species(opossum, "opossum")
+
+coyote <- read.csv(
+	file = "./data/conflicts_raw/coyote.csv",
+	stringsAsFactors = FALSE,
+) %>% 
+	update_foia_columns()
+
+# drop the first 3 rows, which are blank
+coyote <- coyote[-c(1:3),]
+
+# go through and clean descriptions.
+drop_uncertain_species(coyote, "coyote")

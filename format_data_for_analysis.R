@@ -6,13 +6,6 @@
 #
 #########################
 
-species <- "raccoon"
-source("sourcer.R")
-
-
-packs <- c("lubridate", "raster", "sp", "sf")
-
-package_load(packs)
 
 # Set up the presence only data
 
@@ -64,6 +57,9 @@ n_season <- ceiling(nrow(year_month) / 3)
 #   to the number of rows in year_month.
 year_month$season <- rep(seq(1:n_season), each = 3)[1:nrow(year_month)]
 
+# get only the months where we sample
+#year_month <- year_month[seq(2, nrow(year_month), by = 3),]
+
 # combine that with presence only data
 podat <- dplyr::inner_join(
 	podat,
@@ -110,19 +106,19 @@ for(i in 1:n_season){
   
   # Remove any counts outside of Chicago
   #  and also turn 0 to NA
-  tmp <- values(my_counts[[i]][[species]])
+  tmp <- raster::values(my_counts[[i]][[species]])
   tmp[tmp == 0] <- NA
-  tmp[which(is.na(values(chicago_raster$imperv)) & tmp > 0)] <- NA
-  values(my_counts[[i]]) <- tmp
+  tmp[which(is.na(raster::values(chicago_raster$imperv)) & tmp > 0)] <- NA
+  raster::values(my_counts[[i]]) <- tmp
   rm(tmp)
   rm(tmp_podat)
 }
 
-id_vals <- 1:sum(!is.na(values(chicago_raster$canopy)))
+id_vals <- 1:sum(!is.na(raster::values(chicago_raster$canopy)))
 chicago_raster$id <- NA
-id_to_fill <- values(chicago_raster$id)
-id_to_fill[!is.na(values(chicago_raster$canopy))] <- id_vals
-values(chicago_raster$id) <- id_to_fill
+id_to_fill <- raster::values(chicago_raster$id)
+id_to_fill[!is.na(raster::values(chicago_raster$canopy))] <- id_vals
+raster::values(chicago_raster$id) <- id_to_fill
 
 
 # We now have a PO raster for each season of sampling.
@@ -137,8 +133,8 @@ po_pixel_id <- vector(
 # Loop through each season.
 for(i in 1:n_season){
 	# Collect the values
-  tmp <- values(my_counts[[i]][[species]])
-  tmp_ids <- values(chicago_raster$id)
+  tmp <- raster::values(my_counts[[i]][[species]])
+  tmp_ids <- raster::values(chicago_raster$id)
 
   # determine where they occur in the giant raster
   po_location <- which(tmp > 0)
@@ -188,7 +184,8 @@ padat <- padat %>%
 		Opossum = sum(Opossum, na.rm = TRUE),
 		Raccoon = sum(Raccoon, na.rm = TRUE),
 		Redfox = sum(Redfox, na.rm = TRUE),
-		Skunk = sum(Skunk, na.rm = TRUE)
+		Skunk = sum(Skunk, na.rm = TRUE),
+		.groups = "drop_last"
 	)
 
 
@@ -204,6 +201,19 @@ padat <- tidyr::pivot_longer(
 padat2 <- read.csv(
 	"./data/summer_2013.csv"
 )
+# change name of opossum in this dataset
+padat2$CommonName <- gsub(
+	"Virginia opossum",
+	"Opossum",
+	padat2$CommonName
+)
+# as well as skunk
+padat2$CommonName <- gsub(
+	"Striped Skunk",
+	"Skunk",
+	padat2$CommonName
+)
+
 
 padat2$Season <- "SU13"
 
@@ -298,7 +308,7 @@ pa_full_pixelID <- raster::cellFromXY(
 
 # And then assign them the actual ID, which is based on the raster cells
 #  with information
-sc_spatial$pixelID <- values(chicago_raster$id)[pa_full_pixelID]
+sc_spatial$pixelID <- raster::values(chicago_raster$id)[pa_full_pixelID]
 
 
 # convert back to a data.frame
@@ -321,7 +331,7 @@ padat <- dplyr::inner_join(
 )
 
 padat <- sf::st_as_sf(
-	padat,
+	data.frame(padat),
 	coords = c("Easting", "Northing"),
 	crs = 32616
 )
@@ -334,6 +344,7 @@ padat <- sf::st_transform(
 
 # filter down to the target species for this analysis
 padat$Species <- tolower(padat$Species)
+
 padat <- padat[padat$Species == species,]
 
 # See if any sites need to be dropped because they have no data, this
@@ -365,7 +376,6 @@ j_widen <- data.frame(
 	Season = padat$Season,
 	J = padat$J
 )
-which(is.na(j_widen), arr.ind = TRUE)
 
 j_widen <- tidyr::pivot_wider(
 	j_widen,
@@ -404,8 +414,10 @@ chicago_scaled <- raster::scale(
 	chicago_raster
 )
 
+
+
 # check for correlation among covariates
-to_corr <- values(chicago_scaled)
+to_corr <- raster::values(chicago_scaled)
 to_corr <- to_corr[complete.cases(to_corr),]
 
 corred <- round(
@@ -414,19 +426,55 @@ corred <- round(
 )
 
 # get the occupancy covariates
-occ_covs <- cbind(1, values(chicago_scaled))
+occ_covs <- raster::values(chicago_scaled)
 
 # and drop out all NA values
 occ_covs <- occ_covs[complete.cases(occ_covs),
 										 -which(colnames(occ_covs) == "id")]
 
-# looks like only grass cover and impervious covar are strongly and
+# looks like only grass cover and impervious cover are strongly and
 #  negatively correlated (-0.62). The next would be canopy cover and
-#  impervious cover (-0.43). Everything else is quite low in terms
-#  of correlation. As such, I'm just going to let the Bayesian
-#  LASSO take care of this.
+#  impervious cover (-0.43), and then imperv and houses (0.32).
+#  Everything else is quite low in terms
+#  of correlation. Regardless, we need to do some amount of dimension
+#  reduction.
 
-my_data <- list(
+ var_pca <- prcomp(
+ 	occ_covs[,c("canopy", "grass", "imperv", "houses")],
+ 	center = FALSE
+ 	)
+ 
+ # Here are the loadings from this analysis
+ # canopy  0.2784312 -0.8189926  0.2674786 -0.4244789
+ # grass   0.5682957  0.2921264 -0.5502036 -0.5375669
+ # imperv -0.6672976  0.1781493  0.1044941 -0.7155821
+ # houses -0.3927213 -0.4606257 -0.7840996  0.1370465
+ 
+ # multiply everything by -1 so positive generally means more urban
+ var_pca$x <- var_pca$x * -1
+ var_pca$rotation <-  var_pca$rotation * -1
+ 
+ # looking better
+ #          PC1   PC2   PC3   PC4
+ # canopy -0.28  0.82 -0.27  0.42
+ # grass  -0.57 -0.29  0.55  0.54
+ # imperv  0.67 -0.18 -0.10  0.72
+ # houses  0.39  0.46  0.78 -0.14
+ 
+ # first two explain 75% of the variability in the data.
+ # URB1 = negative is more canopy and grass, positive is more imperv and houses
+ # URB2 = negative is more grass and imperv, positive is more houses and canopy
+ 
+ # we'll add those in and check for correlations again
+ 
+ occ_covs <- cbind(var_pca$x[,1:2], occ_covs[,c("income", "vacancy", "dist2water")])
+
+ 
+ # reduce detection covaraites for pa data to just pc1 and pc2
+ pa_det_covs <- occ_covs[,c("PC1", "PC2")]
+ 
+ 
+ my_data <- list(
 	# Total number of grid points
 	G = G, 
 	# The occupancy covariates of the latent state Poisson process
@@ -434,7 +482,7 @@ my_data <- list(
 	# The detection covariates for the presence only data
 	po_det_covs = occ_covs,
 	# The detection covariates for the presence / absence data
-	pa_det_covs = occ_covs,
+	pa_det_covs = pa_det_covs,
 	# The pixels that the presence absence data occurred
 	pa_pixel = y_widen$pixelID,
 	# The pixels that the presence only data occurred							
@@ -452,7 +500,7 @@ my_data <- list(
 	npa = nrow(y_widen),
 	# The log cell area, logged as the parameters are on the log scale
 	#   in the model.
-	cell_area = log(prod(res(chicago_raster))),
+	cell_area = log(prod(res(chicago_raster)/100)),
 	# Ones for the 'ones' trick in JAGS (for coding up likelihood)
 	ones = rep(1, sum(npo_count)),
 	# A big constant value for 'ones' trick.
@@ -462,35 +510,40 @@ my_data <- list(
 	# Number of observational parameters, presence only
 	nobs_po = ncol(occ_covs),
 	# Number of observational parameters, presence / absence
-	nobs_pa = ncol(occ_covs),
+	nobs_pa = ncol(pa_det_covs),
 	# Number of seasons sampled
 	nyear = length(po_pixel_id),
 	J = as.matrix(j_widen[,-1])
 )
 
+ y_pa_init <- my_data$y_pa
+ y_pa_init[is.na(y_pa_init)] <- 0
+ y_pa_init[!is.na(my_data$y_pa)] <- NA
 
-inits <- function(chain){
+ my_inits <- function(chain){
 	gen_list <- function(chain = chain){
 		list( 
 			z = matrix(1, ncol = my_data$nyear, nrow = my_data$G),
-			beta_occ_fill = rnorm(my_data$nlatent-1),
-			beta_observation = rnorm(my_data$nobs_pa-1),
-			beta_po_fill = rnorm(my_data$nobs_po-1),
-			psi_mu = rnorm(1),
-			pa_mu = rnorm(1),
-			po_mu = rnorm(1),
-			lambda_beta_occ = runif(1, 1, 3),
-			lambda_pa_det = runif(1, 1, 3),
-			lambda_po_det = runif(1, 1, 3),
-			psi_tau_season = rgamma(1, 1, 1),
-			pa_tau_season = rgamma(1, 1, 1),
-			po_tau_season = rgamma(1, 1, 1),
-			psi_season = rnorm(my_data$nyear),
-			pa_season = rnorm(my_data$nyear),
-			po_season = rnorm(my_data$nyear),
+			beta_occ = rnorm(my_data$nlatent, 0, 0.25),
+			beta_pa_det = rnorm(my_data$nobs_pa, 0, 0.25),
+			beta_po_det = rnorm(my_data$nobs_po, 0, 0.25),
+			psi_mu = rnorm(1, -5, 0.25),
+			pa_mu = rnorm(1, -2.75, 0.25),
+			po_mu = rnorm(1, 3, 0.25),
+			lambda_beta_occ = runif(1, 1, 2),
+			lambda_pa_det = runif(1, 1, 2),
+			lambda_po_det = runif(1, 1, 2),
+			psi_tau_season = rgamma(1, 2, 4),
+			pa_tau_season = rgamma(1, 2, 4),
+			po_tau_season = rgamma(1, 2, 4),
+			psi_season = rnorm(my_data$nyear, 0, 0.25),
+			pa_season = rnorm(my_data$nyear, 0, 0.25),
+			po_season = rnorm(my_data$nyear,0, 0.25),
+			theta = rnorm(1),
+			y_pa_init,
 			.RNG.name = switch(chain,
 												 "1" = "base::Wichmann-Hill",
-												 "2" = "base::Marsaglia-Multicarry",
+												 "2" = "base::Wichmann-Hill",
 												 "3" = "base::Super-Duper",
 												 "4" = "base::Mersenne-Twister",
 												 "5" = "base::Wichmann-Hill",
@@ -513,20 +566,4 @@ inits <- function(chain){
 	)
 }
 
-m1 <- run.jags(model = "integrated_pp_dynamic.R", 
-							 data = my_data, 
-							 n.chains = 4, 
-							 inits = inits, 
-							 monitor = c(
-							 	"beta_occ_fill", "beta_observation", "beta_po_fill",
-							 	"lambda_beta_occ", "lambda_pa_det", "lambda_po_det",
-							 	"psi_mu", "pa_mu", "po_mu", "psi_season",
-							 	"pa_season", "po_season", "psi_sd_season",
-							 	"pa_sd_season", "po_sd_season"
-							 	), 
-							 adapt = 1000, 
-							 burnin = 2000, 
-							 sample = 3000,
-							 thin = 5,
-							 method = 'parallel',
-							 summarise = FALSE)
+ 
