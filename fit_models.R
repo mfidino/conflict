@@ -131,7 +131,7 @@ source("format_data_for_analysis.R")
 
 # Note: my_data is the data list that is created from the 
 #       script above.
-m1 <- run.jags(model = "integrated_pp_dynamic_faster_ranef_theta.R", 
+m1 <- run.jags(model = "integrated_pp_dynamic_faster_ranef.R", 
 							 data = my_data, 
 							 n.chains = 3, 
 							 inits = my_inits, 
@@ -139,7 +139,9 @@ m1 <- run.jags(model = "integrated_pp_dynamic_faster_ranef_theta.R",
 							 	"beta_occ", "beta_pa_det", "beta_po_det",
 							 	"psi_mu", "pa_mu", "po_mu", "psi_season",
 							 	"pa_season", "po_season", "psi_sd_season",
-							 	"pa_sd_season", "po_sd_season", "zsum", "theta"
+							 	"pa_sd_season", "po_sd_season",
+							 	"beta_occ_mu", "beta_po_det_mu",
+							 	"beta_occ_sd", "beta_po_det_sd"
 							 ), 
 							 adapt = 100, 
 							 burnin = 10000, 
