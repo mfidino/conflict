@@ -13,9 +13,9 @@
 my_species <- c("raccoon", "opossum", "coyote")
 
 for(animal in 1:length(my_species)){
-	my_species <- c("raccoon", "opossum", "coyote")
+	my_species <- c("opossum", "raccoon", "coyote")
 	source("sourcer.R")
-	packs <- c("lubridate", "raster", "sp", "sf", "runjags", "coda", "nimble")
+	packs <- c("lubridate", "raster", "sp", "sf", "runjags", "coda", "mgcv")
 	package_load(packs)
 
 # species is used in "format_data_for_analysis.R" to 
@@ -26,127 +26,72 @@ species <- my_species[animal]
 cat(species)
 source("format_data_for_analysis.R")
 
-# test <- readBUGSmodel("integrated_pp_dynamic_faster_ranef.R",
-# 											data = my_data)
+#y_pa_init <- my_data$y_pa
+#y_pa_init[is.na(y_pa_init)] <- 0
+#y_pa_init[!is.na(my_data$y_pa)] <- NA
 
-
-# longshot <- function(seed,data){
-# 	library(nimble)
-# 	
-# 	my_inits <- function(chain){
-# 		gen_list <- function(chain = chain){
-# 			list( 
-# 				z = matrix(1, ncol = data$nyear, nrow = data$G),
-# 				beta_occ = rnorm(data$nlatent, 0, 0.25),
-# 				beta_pa_det = rnorm(data$nobs_pa, 0, 0.25),
-# 				beta_po_det = rnorm(data$nobs_po, 0, 0.25),
-# 				psi_mu = rnorm(1, -5, 0.25),
-# 				pa_mu = rnorm(1, -2.75, 0.25),
-# 				po_mu = rnorm(1, 3, 0.25),
-# 				lambda_beta_occ = runif(1, 1, 2),
-# 				lambda_pa_det = runif(1, 1, 2),
-# 				lambda_po_det = runif(1, 1, 2),
-# 				psi_tau_season = rgamma(1, 2, 4),
-# 				pa_tau_season = rgamma(1, 2, 4),
-# 				po_tau_season = rgamma(1, 2, 4),
-# 				psi_season = rnorm(data$nyear, 0, 0.25),
-# 				pa_season = rnorm(data$nyear, 0, 0.25),
-# 				po_season = rnorm(data$nyear,0, 0.25),
-# 				.RNG.name = switch(chain,
-# 													 "1" = "base::Wichmann-Hill",
-# 													 "2" = "base::Wichmann-Hill",
-# 													 "3" = "base::Super-Duper",
-# 													 "4" = "base::Mersenne-Twister",
-# 													 "5" = "base::Wichmann-Hill",
-# 													 "6" = "base::Marsaglia-Multicarry",
-# 													 "7" = "base::Super-Duper",
-# 													 "8" = "base::Mersenne-Twister"),
-# 				.RNG.seed = sample(1:1e+06, 1)
-# 			)
-# 		}
-# 		return(switch(chain,           
-# 									"1" = gen_list(chain),
-# 									"2" = gen_list(chain),
-# 									"3" = gen_list(chain),
-# 									"4" = gen_list(chain),
-# 									"5" = gen_list(chain),
-# 									"6" = gen_list(chain),
-# 									"7" = gen_list(chain),
-# 									"8" = gen_list(chain)
-# 		)
+# my_inits <- function(chain){
+# 	gen_list <- function(chain = chain){
+# 		list(
+# 			z = matrix(1, ncol = my_data$nyear, nrow = my_data$G),
+# 			beta_occ = rnorm(my_data$nlatent, 0, 0.25),
+# 			temp_occ = rnorm(2),
+# 			beta_pa_det = rnorm(my_data$nobs_pa, 0, 0.25),
+# 			beta_po_det = rnorm(my_data$nobs_po, 0, 0.25),
+# 			beta_po_det_mu = rnorm(my_data$nobs_po),
+# 			beta_po_det_tau = rgamma(my_data$nobs_po,1,1),
+# 			psi_mu = rnorm(1, -5, 0.25),
+# 			pa_mu = rnorm(1, -2.75, 0.25),
+# 			po_mu = rnorm(1, 3, 0.25),
+# 			g_tau = rgamma(1, 2, 4),
+# 			g_re = rnorm(my_data$G, 0, 0.25),
+# 			pa_tau_season = rgamma(1, 2, 4),
+# 			po_tau_season = rgamma(1, 2, 4),
+# 			pa_season = rnorm(my_data$nyear, 0, 0.25),
+# 			po_season = rnorm(my_data$nyear,0, 0.25),
+# 			y_pa = y_pa_init,
+# 			.RNG.name = switch(chain,
+# 												 "1" = "base::Wichmann-Hill",
+# 												 "2" = "base::Wichmann-Hill",
+# 												 "3" = "base::Super-Duper",
+# 												 "4" = "base::Mersenne-Twister",
+# 												 "5" = "base::Wichmann-Hill",
+# 												 "6" = "base::Marsaglia-Multicarry",
+# 												 "7" = "base::Super-Duper",
+# 												 "8" = "base::Mersenne-Twister"),
+# 			.RNG.seed = sample(1:1e+06, 1)
 # 		)
 # 	}
-# 	
-# 	
-# 	test <- readBUGSmodel("integrated_pp_dynamic_faster_ranef.R",
-# 												data = data,
-# 												inits = my_inits(1),
-# 												calculate = TRUE)
-# 	
-# 	tc <- my_data[
-# 		c("G", "pa_pixel", "po_pixel",
-# 			"opp_year", "npo", "all_npo", "cell_area", "CONSTANT", "nlatent",
-# 			"nobs_po", "nobs_pa", "nyear", "npa")]
-# 	td <- my_data[-which(names(my_data) %in% c("G", "pa_pixel", "po_pixel",
-# 									 "opp_year", "npo", "all_npo", "cell_area", "CONSTANT", "nlatent",
-# 									 "nobs_po", "nobs_pa", "nyear", "npa"))]
-# 	outA <- nimbleMCMC(
-# 		code = test,
-# 		constants = tc,
-# 		data = td,
-# 		inits = my_inits(1),
-# 		monitors = c(
-# 			"beta_occ", "beta_pa_det", "beta_po_det",
-# 			"lambda_beta_occ", "lambda_pa_det", "lambda_po_det",
-# 			"psi_mu", "pa_mu", "po_mu", "psi_season",
-# 			"pa_season", "po_season", "psi_sd_season",
-# 			"pa_sd_season", "po_sd_season"
-# 		),
-# 		nburnin = 100,
-# 		niter = 200,
-# 		nchains = 1,
-# 		progress = TRUE,
-# 		setSeed = 121
+# 	return(switch(chain,
+# 								"1" = gen_list(chain),
+# 								"2" = gen_list(chain),
+# 								"3" = gen_list(chain),
+# 								"4" = gen_list(chain),
+# 								"5" = gen_list(chain),
+# 								"6" = gen_list(chain),
+# 								"7" = gen_list(chain),
+# 								"8" = gen_list(chain)
 # 	)
-# 	return(outA)
-# 	
+# 	)
 # }
-# 
-# test <- readBUGSmodel("integrated_pp_dynamic_faster_ranef.R",
-# 											data = my_data,
-# 											inits = my_inits(1),
-# 											calculate = TRUE)
-# 
-# 
-# library(parallel)
-# this_cluster <- makeCluster(3)
-# 
-# chain_output <- parLapply(cl = this_cluster, X = 1:3, 
-# 													fun = longshot, 
-# 													data = my_data)
-# 
-# # It's good practice to close the cluster when you're done with it.
-# stopCluster(this_cluster)
-
 
 # Note: my_data is the data list that is created from the 
 #       script above.
-m1 <- run.jags(model = "integrated_pp_dynamic_faster_ranef.R", 
+m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R", 
 							 data = my_data, 
 							 n.chains = 3, 
 							 inits = my_inits, 
 							 monitor = c(
 							 	"beta_occ", "beta_pa_det", "beta_po_det",
-							 	"psi_mu", "pa_mu", "po_mu", "psi_season",
-							 	"pa_season", "po_season", "psi_sd_season",
-							 	"pa_sd_season", "po_sd_season",
-							 	"beta_occ_mu", "beta_po_det_mu",
-							 	"beta_occ_sd", "beta_po_det_sd"
+							 	"psi_mu", "pa_mu", "po_mu",
+							 	"pa_season", "po_season", "b", "rho",
+							 	"gam_sd",
+							 	"pa_sd_season", "po_sd_season"
 							 ), 
-							 adapt = 100, 
+							 adapt = 1000, 
 							 burnin = 10000, 
-							 sample = 10000, 
-							 thin = 1,
+							 sample = 2000, 
+							 thin = 4,
 							 modules = "glm",
 							 method = 'parallel',
 							 summarise = FALSE)

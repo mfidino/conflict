@@ -7,7 +7,7 @@ model{
 		# log-linear predictor intensity across landscape
 		#  Need to calculate for each cell because we need
 		#  the background estimate for presence only data
-		log(lambda[g, year]) <- psi_mu + 
+		log(lambda[g, year]) <- inprod(X[g,], b[,year]) +
 			inprod(occ_covs[g,1:nlatent ], beta_occ[1:nlatent]) +
 			cell_area
 			
@@ -15,8 +15,7 @@ model{
 		#  Similar to lambda, we need to calculate this for each
 		#  cell for the background estimate.
 		logit(thin_prob[g, year]) <- po_mu + po_season[year] + 
-			inprod(po_det_covs[g,1:nlatent ] , beta_po_det[1:nlatent]) + 
-			inprod(temp_covs[year,1:2], temp_occ[1:2])
+			inprod(po_det_covs[g,1:nobs_po ] , beta_po_det[1:nobs_po])
 		# Probability of occupancy in a cell via inverse complementary log log link
 		# latent occupancy in each cell. For PA data.
 		z[g, year] ~ dbern(1 - exp(-lambda[g, year]))
@@ -35,22 +34,6 @@ model{
 	#  for each PO datapoint.
 	#  This means that we have grouped all of the PO data into one long vector.
 	#  of length(all_npo)
-	# for(opp in 1:all_npo){
-	# 	# lambda for PO, nested indexing
-	# 	log(lambda_po[opp]) <- psi_mu + psi_season[opp_year[opp]] +
-	# 		inprod(occ_covs[po_pixel[opp],1:nlatent ], beta_occ[1:nlatent]) + 
-	# 		cell_area
-	# 	# thin for PO, nested indexing
-	# 	logit(thin_lambda_po[opp]) <- po_mu + po_season[opp_year[opp]] + 
-	# 		inprod(po_det_covs[po_pixel[opp], 1:nobs_po], beta_po_det[1:nobs_po])
-	# 	# one's trick
-	# 	ones[opp] ~ dbern(
-	# 		exp(
-	# 			log(lambda_po[opp] * thin_lambda_po[opp]) -
-	# 				log(background[opp_year[opp]])
-	# 		) / CONSTANT
-	# 	)
-	# }
 	for(opp in 1:all_npo){
 		# one's trick
 		ones[opp] ~ dbern(
@@ -73,27 +56,32 @@ model{
 	}
 	# priors for latent state
 	# temporal random effect
-	psi_mu ~ dnorm(-3.2, 0.75)
-	
-	#g_tau ~ dgamma(1,1)
-	#g_sd <- 1 / sqrt(g_tau)
-	#for(g in 1:G){
-  #		g_re[g] ~ dnorm(0, g_tau)
-	#}
-
-	#lambda_beta_occ ~ dunif(0.001,20)
+	#psi_mu ~ dnorm(-3.2, 0.75)
+  # slope terms
 	for(latent in 1:nlatent){
 			beta_occ[latent] ~ dnorm(0, 0.75)
 	}
-	for(prd in 1:2){
-		temp_occ[prd] ~ dnorm(0, 0.75)
+	# Smoothing spline for occupancy
+	b[1,1] ~ dnorm(-3.2,0.75)
+	## prior for s(E,N)... 
+	K1 <- S1[1:(nspline-1),1:(nspline-1)] * lambda_gam 
+	b[2:nspline,1] ~ dmnorm(zero[2:nspline],K1) 
+	## smoothing parameter priors CHECK...
+	lambda_gam ~ dgamma(.05,.005)
+	rho <- log(lambda)
+	# yearly variation for spline for spline as random walk
+	gam_tau ~ dgamma(1,1)
+	gam_sd <- 1 / sqrt(gam_tau)
+	for(jj in 1:nspline){
+	  for(yr in 2:nyear){
+		  b[jj,yr] ~ dnorm(b[jj,yr-1], gam_tau)
+	  }
 	}
 	# priors for presence absence observation 
 	# temporal random effect
 	pa_mu ~ dnorm(0, 0.75)
 	pa_tau_season ~ dgamma(1,1)
 	pa_sd_season <- 1 / sqrt(pa_tau_season)
-	#lambda_pa_det ~ dunif(0.001,20)
 	for(year in 1:nyear){
 		pa_season[year] ~ dnorm(0, pa_tau_season)
 	}

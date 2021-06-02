@@ -36,6 +36,11 @@ species <- "coyote"
 #  occupancy covariates and the like.
 source("format_data_for_analysis.R")
 
+cov1 <- sin((2 * pi/4) * (1:my_data$nyear ))
+cov2 <- cos((2 * pi/4) * (1:my_data$nyear ))
+my_data$temp_covs <- matrix(c(cov1, cov2), ncol = 2, nrow = length(cov1))
+
+
 # Plot out the regression results for baseline occupancy
 #  and conflict.
 # get beta_occ and beta_po_det
@@ -69,8 +74,11 @@ parms <- split(
 )
 
 pretty_parms <- c(
-	"URB1", "URB2", "Income", "Vacancy", "Distance\nto water"
+	"URB1|URB2", "Income", "Vacancy"
 )
+
+
+
 
 {windows(8,4)
 par(
@@ -81,7 +89,7 @@ par(
 
 # step 1. plot out occupancy results
 plot(
-	1~1, type = "n", bty = "n", ylim = c(0.5, 5.5),
+	1~1, type = "n", bty = "n", ylim = c(0.5, 3.5),
 	xlim = c(-1, 1), xaxt = "n", yaxt = "n",
 	xlab = "", ylab = "", xaxs = "i", yaxs = "i"
 )
@@ -96,8 +104,8 @@ mtext(text = sprintf("%.1f",seq(-0.5,0.5, 1)), 1,
 mtext("Occupancy (log scale)", side = 1,
 			line = 2.25, cex = 1.3)
 par(xpd = NA)
-text(labels = pretty_parms, x = rep(1.3,5) , y = rev(1:5)+0.36,
-			cex = 1, las = 1, pos = 1)
+text(labels = pretty_parms, x = rep(1.3,3) , y = rev(1:3)+0.18,
+			cex = 0.8, las = 1, pos = 1)
 text(x = u[1]+ abs(u[1] * 0.1), y = u[4],
 		 labels = "a)")
 par(xpd = FALSE)
@@ -111,8 +119,8 @@ abline(v = 0, lty = 2)
 abline(v = u[2])
 
 my_cols <- c("#24d5f7ff", "#5ee38bff", "#ffb226ff")
-for(i in 1:5){
-	tmp_y <- seq(6 - i-0.25,6 - i+0.25, length.out = 3)
+for(i in 1:3){
+	tmp_y <- seq(4 - i-0.25,4 - i+0.25, length.out = 3)
 	ci_x <- parms[[i]][rev(1:3),c(1,3)]
 	arrows(
 		x0 = ci_x$Lower95,
@@ -137,16 +145,16 @@ for(i in 1:5){
 # step 2. plot out the conflict results
 par(mar = c(4,0.5,2,4.5))
 plot(
-	1~1, type = "n", bty = "l", ylim = c(0.5, 5.5),
-	xlim = c(-3, 3), xaxt = "n", yaxt = "n",
+	1~1, type = "n", bty = "l", ylim = c(0.5, 3.5),
+	xlim = c(-1, 5), xaxt = "n", yaxt = "n",
 	xlab = "", ylab = "", xaxs = "i", yaxs = "i"
 )
 
-axis(1, seq(-3,3, 1), labels = FALSE, tck = -0.03 )
-axis(1, seq(-3,3, 0.5), labels = FALSE, tck = -0.03/2 )
-axis(2, 1:5, labels = FALSE, tck = -0.03/2)
-mtext(text = sprintf("%.0f",seq(-3,3, 1)), 1, 
-			line = 0.5, at = seq(-3,3, 1),las = 1, cex = 1)
+axis(1, seq(-1,5, 1), labels = FALSE, tck = -0.03 )
+axis(1, seq(-1,5, 0.5), labels = FALSE, tck = -0.03/2 )
+axis(2, 1:3, labels = FALSE, tck = -0.03/2)
+mtext(text = sprintf("%.0f",seq(-1,5, 1)), 1, 
+			line = 0.5, at = seq(-1,5, 1),las = 1, cex = 1)
 mtext("Conflict (logit scale)", side = 1,
 			line = 2.25, cex = 1.3)
 
@@ -160,9 +168,9 @@ abline(v = 0, lty = 2)
 abline(v = u[1])
 
 my_cols <- c("#24d5f7ff", "#5ee38bff", "#ffb226ff")
-for(i in 1:5){
-	tmp_y <- seq(6 - i-0.25,6 - i+0.25, length.out = 3)
-	ci_x <- parms[[i+5]][rev(1:3),c(1,3)]
+for(i in 1:3){
+	tmp_y <- seq(4 - i-0.25,4 - i+0.25, length.out = 3)
+	ci_x <- parms[[i+3]][rev(1:3),c(1,3)]
 	arrows(
 		x0 = ci_x$Lower95,
 		y0 = tmp_y,
@@ -174,7 +182,7 @@ for(i in 1:5){
 		col = my_cols,
 		lwd = 3
 	)
-	med_x <- parms[[i+5]]$Median[rev(1:3)]
+	med_x <- parms[[i+3]]$Median[rev(1:3)]
 	points(
 		med_x, tmp_y,
 		pch = c(21,22,23), 
@@ -185,11 +193,91 @@ for(i in 1:5){
 par(xpd = NA)
 text(x = u[1]+ abs(u[1] * 0.1), y = u[4],
 		 labels = "b)")
-legend(x = 2.9, y =3.7,
+legend(x = 4.9, y =2.4,
 			 legend = rev(c("coyote", "opossum", "raccoon")),
 			 pch = rev(21:23), pt.bg = rev(my_cols), pt.cex = 1.5,
 			 horiz = FALSE, cex = 0.9, xjust = 0, bty = "n")
 }
+
+
+# plot out the fourier series stuff
+
+
+mm <- lapply(
+	my_mcmc,
+	function(x) as.matrix(as.mcmc.list(x))
+)
+
+# get model intercept and fourier stuff
+
+four <- lapply(
+	mm,
+	function(x) x[,grep("po_mu|temp_occ", colnames(x))]
+)
+
+names(four) <- names(my_sum)
+# do some predictions
+mpred <- vector("list", 3)
+for(i in 1:3){
+mpred[[i]] <- four[[i]] %*% t(cbind(1, my_data$temp_covs)) #+ my_data$cell_area
+mpred[[i]] <- plogis(mpred[[i]])#1 - exp(-exp(mpred[[i]]) )
+mpred[[i]] <- apply(mpred[[i]], 2, quantile, c(0.025,0.5,0.975))
+}
+
+windows(4,8)
+par(mfrow = c(3,1))
+par(mar = c(4,6,1,1))
+
+xlabel <- rep(c("WI", "SP", "SU", "FA"), 3)
+
+sublabel = c("a) coyote", "b) V. opossum", "c) raccoon" )
+
+my_cols <- c("#24d5f7ff", "#5ee38bff","#ffb226ff" )
+my_range <- c(0.4,1)
+for(s in 1:3){
+	species <- names(four)[s]
+	source("format_data_for_analysis.R")
+	tmp <- mpred[[s]]
+	plot(
+		1~1, type = "n", bty = "n", ylim = my_range,
+		xlim = c(1, 12), xaxt = "n", yaxt = "n",
+		xlab = "", ylab = ""
+	)
+	u <- par("usr")
+	text(x = u[1]+ (u[1]*0.2), y = u[4] - (u[4]*0.1),
+			 labels = sublabel[s], pos = 4, cex = 1.5)
+	axis(1, seq(1,12, 1), labels = FALSE, tck = -0.03 )
+	#axis(1, seq(-1,1, 0.25), labels = FALSE, tck = -0.03/2 )
+	axis(2, seq(0.4,1, 0.1), labels = FALSE, tck = -0.03 )
+  axis(2, seq(0.4,1, 0.1/2), labels = FALSE, tck = -0.03/2 )
+	axis(2, 1:5, labels = FALSE, tck = -0.03/2)
+	mtext(text = xlabel, 1, 
+				line = 1, at = seq(1,12, 1),las = 1, cex = 1)
+	mtext(text = sprintf("%.1f",seq(0.4,1, .2)), 2, 
+				line = 0.8, at = seq(0.4,1, .2),las = 1, cex = 1)
+	mtext("Season", side = 1,
+				line = 2.8, cex = 1.3)
+	mtext("Occupancy", side = 2,
+				line = 3.8, cex = 1.3)
+	x1 <- 1:12
+	x2 <- rev(x1)
+	y1 <- tmp[1,]
+	y2 <- rev(tmp[3,])
+  polygon(
+  	x = c(x1, x2),
+  	y = c(y1,y2),
+  	col = scales::alpha(my_cols[s], 0.5),
+  	border = NA
+  )
+  lines(tmp[2,] ~ c(1:12), lwd = 3)
+  npo_data <- (my_data$npo +
+  						 	sum(my_data$y_pa[,s]>0, na.rm = TRUE)) / my_data$G
+  
+  lines(npo_data ~ c(1:12))
+  
+  points(npo_data ~ c(1:12), pch = 19, col = "white", cex = 2)
+  points(npo_data ~ c(1:12))
+	}
 
 
 plot(1~1)
