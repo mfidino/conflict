@@ -1,0 +1,13 @@
+model {
+  eta <- X %*% b ## linear predictor
+  for (i in 1:n) { mu[i] <-  ilogit(eta[i]) } ## expected response
+  for (i in 1:n) { y[i] ~ dbin(mu[i],w[i]) } ## response 
+  ## prior for s(E,N)... 
+  K1 <- S1[1:9,1:9] * lambda[1] 
+  b[1:9] ~ dmnorm(zero[1:9],K1) 
+  ## smoothing parameter priors CHECK...
+  for (i in 1:1) {
+    lambda[i] ~ dgamma(.05,.005)
+    rho[i] <- log(lambda[i])
+  }
+}

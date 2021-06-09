@@ -12,7 +12,7 @@
 
 my_species <- c("raccoon", "opossum", "coyote")
 
-for(animal in 2:length(my_species)){
+for(animal in 1:length(my_species)){
 	my_species <- c("opossum", "raccoon", "coyote")
 	source("sourcer.R")
 	packs <- c("lubridate", "raster", "sp", "sf", "runjags", "coda", "mgcv")
@@ -77,16 +77,16 @@ source("format_data_for_analysis.R")
 
 # Note: my_data is the data list that is created from the 
 #       script above.
-m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R", 
+m1 <- run.jags(model = "integrated_pp_dynamic_spatial_gam.R", 
 							 data = my_data, 
 							 n.chains = 3, 
 							 inits = my_inits, 
 							 monitor = c(
 							 	"beta_occ", "beta_pa_det", "beta_po_det",
-							 	"psi_mu", "pa_mu", "po_mu",
+							 	"psi_mu", "pa_mu", "po_mu", "occ_season",
 							 	"pa_season", "po_season", "b", "rho",
 							 	"gam_sd",
-							 	"pa_sd_season", "po_sd_season"
+							 	"occ_sd_season", "pa_sd_season", "po_sd_season"
 							 ), 
 							 adapt = 1000, 
 							 burnin = 10000, 
@@ -101,7 +101,7 @@ m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R",
 msum <- round(summary(m1),2)
 saveRDS(
 	m1,
-	paste0("./mcmc_output/",species,"_model.RDS")
+	paste0("./mcmc_output/",species,"_spatial_gam_model.RDS")
 )
 
 #saveRDS(

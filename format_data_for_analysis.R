@@ -490,12 +490,13 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
  tmp_dat <- cbind(1, ccord, occ_covs)
  colnames(tmp_dat)[1:3] <- c("y", "E", "N") 
  tmp_dat <- data.frame(tmp_dat)
- 
+ row.names(tmp_dat) <- NULL
+ tmp_dat <- tmp_dat[rep(row.names(tmp_dat), length(po_pixel_id)),]
+ tmp_dat$yr <- rep(1:length(po_pixel_id), each = nrow(occ_covs))
  
  jags.file <- "test.jags"
 
  # Thi
- offie <- log(prod(res(chicago_raster)/100))
  gam_dat <- jagam(y ~ s(E,N, k = 10, bs = "ds", m = c(1,0.5)),
  							data = tmp_dat, file = jags.file, 
  							family = "binomial")
@@ -564,30 +565,24 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
 		list(
 			z = matrix(1, ncol = my_data$nyear, nrow = my_data$G),
 			beta_occ = rnorm(my_data$nlatent, 0, 0.25),
-			b = matrix(
-				rnorm(my_data$nspline * my_data$nyear,
-							rep(
-								gam_dat$jags.ini$b,
-								each = my_data$nyear),
-							0.1),
-				nrow = my_data$nspline,
-				ncol = my_data$nyear),
+			b =rnorm(
+				my_data$nspline,
+				gam_dat$jags.ini$b,
+				0.1),
 			lambda_gam = rgamma(1, 1,1),
 			gam_tau = rgamma(1,1,1),
 			beta_pa_det = rnorm(my_data$nobs_pa, 0, 0.25),
 			beta_po_det = rnorm(my_data$nobs_po, 0, 0.25),
 			beta_po_det_mu = rnorm(my_data$nobs_po),
 			beta_po_det_tau = rgamma(my_data$nobs_po,1,1),
-			psi_mu = rnorm(1, -5, 0.25),
 			pa_mu = rnorm(1, -2.75, 0.25),
 			po_mu = rnorm(1, 3, 0.25),
-			lambda_beta_occ = runif(1, 1, 2),
 			lambda_pa_det = runif(1, 1, 2),
 			lambda_po_det = runif(1, 1, 2),
-			psi_tau_season = rgamma(1, 2, 4),
+			occ_tau_season = rgamma(1, 2, 4),
 			pa_tau_season = rgamma(1, 2, 4),
 			po_tau_season = rgamma(1, 2, 4),
-			psi_season = rnorm(my_data$nyear, 0, 0.25),
+			occ_season = rnorm(my_data$nyear, 0, 0.25),
 			pa_season = rnorm(my_data$nyear, 0, 0.25),
 			po_season = rnorm(my_data$nyear,0, 0.25),
 			y_pa = y_pa_init,
