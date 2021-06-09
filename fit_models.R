@@ -12,7 +12,7 @@
 
 my_species <- c("raccoon", "opossum", "coyote")
 
-for(animal in 1:length(my_species)){
+for(animal in 2:length(my_species)){
 	my_species <- c("opossum", "raccoon", "coyote")
 	source("sourcer.R")
 	packs <- c("lubridate", "raster", "sp", "sf", "runjags", "coda", "mgcv")

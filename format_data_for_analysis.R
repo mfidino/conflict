@@ -496,7 +496,7 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
 
  # Thi
  offie <- log(prod(res(chicago_raster)/100))
- gam_dat <- jagam(y ~ s(E,N, k = 6, bs = "ds", m = c(1,0.5)),
+ gam_dat <- jagam(y ~ s(E,N, k = 10, bs = "ds", m = c(1,0.5)),
  							data = tmp_dat, file = jags.file, 
  							family = "binomial")
  # change initial value of model intercept

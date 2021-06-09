@@ -68,7 +68,7 @@ model{
 	b[2:nspline,1] ~ dmnorm(zero[2:nspline],K1) 
 	## smoothing parameter priors CHECK...
 	lambda_gam ~ dgamma(.05,.005)
-	rho <- log(lambda)
+	rho <- log(lambda_gam)
 	# yearly variation for spline for spline as random walk
 	gam_tau ~ dgamma(1,1)
 	gam_sd <- 1 / sqrt(gam_tau)

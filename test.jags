@@ -5,8 +5,8 @@ model {
   ## Parametric effect priors CHECK tau=1/11^2 is appropriate!
   for (i in 1:1) { b[i] ~ dnorm(0,0.0083) }
   ## prior for s(E,N)... 
-  K1 <- S1[1:5,1:5] * lambda[1] 
-  b[2:6] ~ dmnorm(zero[2:6],K1) 
+  K1 <- S1[1:9,1:9] * lambda[1] 
+  b[2:10] ~ dmnorm(zero[2:10],K1) 
   ## smoothing parameter priors CHECK...
   for (i in 1:1) {
     lambda[i] ~ dgamma(.05,.005)
