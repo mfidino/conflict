@@ -8,13 +8,13 @@ model{
 		#  Need to calculate for each cell because we need
 		#  the background estimate for presence only data
 		log(lambda[g, year]) <- psi_mu + psi_season[year] +
-			inprod(occ_covs[g,1:nlatent ], beta_occ[1:nlatent]) +
+			inprod(occ_covs[g,1:nlatent ], beta_occ[year, 1:nlatent]) +
 			cell_area
 		# logit-linear predictor for thinned Poisson process. 
 		#  Similar to lambda, we need to calculate this for each
 		#  cell for the background estimate.
 		logit(thin_prob[g, year]) <- po_mu + po_season[year] + 
-			inprod(po_det_covs[g,1:nlatent ] , beta_po_det[1:nlatent])
+			inprod(po_det_covs[g,1:nlatent ] , beta_po_det[year,1:nlatent])
 		# Probability of occupancy in a cell via inverse complementary log log link
 		# latent occupancy in each cell. For PA data.
 		z[g, year] ~ dbern(1 - exp(-lambda[g, year]))
@@ -32,17 +32,28 @@ model{
 	#  for each PO datapoint.
 	#  This means that we have grouped all of the PO data into one long vector.
 	#  of length(all_npo)
+	# for(opp in 1:all_npo){
+	# 	# lambda for PO, nested indexing
+	# 	log(lambda_po[opp]) <- psi_mu + psi_season[opp_year[opp]] +
+	# 		inprod(occ_covs[po_pixel[opp],1:nlatent ], beta_occ[1:nlatent]) + 
+	# 		cell_area
+	# 	# thin for PO, nested indexing
+	# 	logit(thin_lambda_po[opp]) <- po_mu + po_season[opp_year[opp]] + 
+	# 		inprod(po_det_covs[po_pixel[opp], 1:nobs_po], beta_po_det[1:nobs_po])
+	# 	# one's trick
+	# 	ones[opp] ~ dbern(
+	# 		exp(
+	# 			log(lambda_po[opp] * thin_lambda_po[opp]) -
+	# 				log(background[opp_year[opp]])
+	# 		) / CONSTANT
+	# 	)
+	# }
 	for(opp in 1:all_npo){
-		# lambda for PO, nested indexing
-		log(lambda_po[opp]) <- psi_mu + psi_season[opp_year[opp]] +
-			inprod(occ_covs[po_pixel[opp],1:nlatent ], beta_occ[1:nlatent])
-		# thin for PO, nested indexing
-		logit(thin_lambda_po[opp]) <- po_mu + po_season[opp_year[opp]] + 
-			inprod(po_det_covs[po_pixel[opp], 1:nobs_po], beta_po_det[1:nobs_po])
 		# one's trick
 		ones[opp] ~ dbern(
 			exp(
-				log(lambda_po[opp] * thin_lambda_po[opp]) -
+				log(lambda[po_pixel[opp], opp_year[opp]] *
+							thin_prob[po_pixel[opp], opp_year[opp]]) -
 					log(background[opp_year[opp]])
 			) / CONSTANT
 		)
@@ -60,39 +71,55 @@ model{
 	}
 	# priors for latent state
 	# temporal random effect
-	psi_mu ~ dnorm(-3.2, 0.45)
+	psi_mu ~ dnorm(-3.2, 1)T( -8.5, 5)
 	psi_tau_season ~ dgamma(1,1)
 	psi_sd_season <- 1 / sqrt(psi_tau_season)
-	lambda_beta_occ ~ dunif(0.001,20)
+	#lambda_beta_occ ~ dunif(0.001,20)
 	for(year in 1:nyear){
 		psi_season[year] ~ dnorm(0, psi_tau_season)
 	}
 	for(latent in 1:nlatent){
-			beta_occ[latent] ~  ddexp(0, lambda_beta_occ)
+			beta_occ_mu[latent] ~  dnorm(0, 0.75)
+		  beta_occ_tau[latent] ~ dgamma(1,1)
+		  beta_occ_sd[latent] <- 1 / sqrt(beta_occ_tau[latent])
+		for(year in 1:nyear){
+			beta_occ[year,latent] ~ dnorm(
+				beta_occ_mu[latent],
+				beta_occ_tau[latent]
+			)
+		}
 	}
 	# priors for presence absence observation 
 	# temporal random effect
-	pa_mu ~ dnorm(0, 0.45)
+	pa_mu ~ dnorm(0, 1)T( -5,5)
 	pa_tau_season ~ dgamma(1,1)
 	pa_sd_season <- 1 / sqrt(pa_tau_season)
-	lambda_pa_det ~ dunif(0.001,20)
+	#lambda_pa_det ~ dunif(0.001,20)
 	for(year in 1:nyear){
 		pa_season[year] ~ dnorm(0, pa_tau_season)
 	}
 	for(obs_pa in 1:nobs_pa){
-		beta_pa_det[obs_pa] ~ ddexp(0, lambda_pa_det)
+		beta_pa_det[obs_pa] ~ dnorm(0, 1)
 	}
 	# priors for presence only observation
 	# temporal random effect
-	po_mu ~ dnorm(0, 0.45)
+	po_mu ~ dnorm(0, 1)T(-5,5)
 	po_tau_season ~ dgamma(1,1)
 	po_sd_season <- 1 / sqrt(po_tau_season)
-	lambda_po_det ~ dunif(0.001, 20)
+	#lambda_po_det ~ dunif(0.001, 20)
 	for(year in 1:nyear){
 		po_season[year] ~ dnorm(0, po_tau_season)
 	}
 	for(obs_po in 1:nobs_po){
-		beta_po_det[obs_po]  ~  ddexp(0, lambda_po_det)
+		beta_po_det_mu[obs_po]  ~  dnorm(0, 1)
+		beta_po_det_tau[obs_po] ~ dgamma(1,1)
+		beta_po_det_sd[obs_po] <- 1 / sqrt(beta_po_det_tau[obs_po])
+		for(year in 1:nyear){
+			beta_po_det[year,obs_po] ~ dnorm(
+				beta_po_det_mu[obs_po],
+				beta_po_det_tau[obs_po]
+			)
+		}
 	}
 }
 

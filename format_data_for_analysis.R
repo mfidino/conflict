@@ -79,6 +79,7 @@ podat <- st_as_sf(
 	coords = c("lon", "lat"),
 	crs = 4326
 )
+tmp_crs <- crs(podat)
 # then convert to UTM (the Chicago raster)
 podat <- st_transform(
 	podat,
@@ -149,7 +150,7 @@ for(i in 1:n_season){
   # Put the presence only location into our list object.
   po_pixel_id[[i]] <- rep(
 	  po_id,
-	  times = times_to_rep
+	  times = 1#times_to_rep
   )
 }
 
@@ -414,8 +415,19 @@ chicago_scaled <- raster::scale(
 	chicago_raster
 )
 
+# get the coordinates
+ccord <- raster::coordinates(chicago_scaled)
 
-
+ccord <- st_as_sf(
+	data.frame(ccord),
+	coords = c("x", "y"),
+	crs = 32616
+)
+ccord <- sf::st_transform(
+	ccord,
+	crs = 4326
+)
+ccord <- sf::st_coordinates(ccord)
 # check for correlation among covariates
 to_corr <- raster::values(chicago_scaled)
 to_corr <- to_corr[complete.cases(to_corr),]
@@ -426,11 +438,16 @@ corred <- round(
 )
 
 # get the occupancy covariates
+
 occ_covs <- raster::values(chicago_scaled)
 
 # and drop out all NA values
+ccord <- ccord[complete.cases(occ_covs),]
 occ_covs <- occ_covs[complete.cases(occ_covs),
 										 -which(colnames(occ_covs) == "id")]
+
+
+
 
 # looks like only grass cover and impervious cover are strongly and
 #  negatively correlated (-0.62). The next would be canopy cover and
@@ -467,66 +484,100 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
  
  # we'll add those in and check for correlations again
  
- occ_covs <- cbind(var_pca$x[,1:2], occ_covs[,c("income", "vacancy", "dist2water")])
+ occ_covs <- cbind(var_pca$x[,1:2], occ_covs[,c("income", "vacancy")])
+ 
+ # generate the spatial spline stuff
+ tmp_dat <- cbind(1, ccord, occ_covs)
+ colnames(tmp_dat)[1:3] <- c("y", "E", "N") 
+ tmp_dat <- data.frame(tmp_dat)
+ 
+ 
+ jags.file <- "test.jags"
 
+ # Thi
+ offie <- log(prod(res(chicago_raster)/100))
+ gam_dat <- jagam(y ~ s(E,N, k = 10, bs = "ds", m = c(1,0.5)),
+ 							data = tmp_dat, file = jags.file, 
+ 							family = "binomial")
+ # change initial value of model intercept
+ gam_dat$jags.ini$b[1] <- -3.2
+ 
+ psi_covs <- occ_covs[,c("PC1", "income", "vacancy")]
+ po_det_covs <-  occ_covs[,c("PC2", "income", "vacancy")]
  
  # reduce detection covaraites for pa data to just pc1 and pc2
  pa_det_covs <- occ_covs[,c("PC1", "PC2")]
  
- 
  my_data <- list(
-	# Total number of grid points
-	G = G, 
-	# The occupancy covariates of the latent state Poisson process
-	occ_covs = occ_covs,
-	# The detection covariates for the presence only data
-	po_det_covs = occ_covs,
-	# The detection covariates for the presence / absence data
-	pa_det_covs = pa_det_covs,
-	# The pixels that the presence absence data occurred
-	pa_pixel = y_widen$pixelID,
-	# The pixels that the presence only data occurred							
-	po_pixel = unlist(po_pixel_id),
-	# What season each opportunistic data point came from
-	opp_year = rep(1:length(po_pixel_id), times = npo_count),
-	# The number of presence only data points per season
-	npo = as.numeric(npo_count),
-	# The total number of all presence only data points
-	all_npo = sum(npo_count),
-	# The number of days a species was detected per site / season
-	#   for the presence absence data
-	y_pa = as.matrix(y_widen[,-1]),
-	# The number of sites presence absence data was sampled
-	npa = nrow(y_widen),
-	# The log cell area, logged as the parameters are on the log scale
-	#   in the model.
-	cell_area = log(prod(res(chicago_raster)/100)),
-	# Ones for the 'ones' trick in JAGS (for coding up likelihood)
-	ones = rep(1, sum(npo_count)),
-	# A big constant value for 'ones' trick.
-	CONSTANT = 10000,
-	# Number of latent parameters
-	nlatent = ncol(occ_covs),
-	# Number of observational parameters, presence only
-	nobs_po = ncol(occ_covs),
-	# Number of observational parameters, presence / absence
-	nobs_pa = ncol(pa_det_covs),
-	# Number of seasons sampled
-	nyear = length(po_pixel_id),
-	J = as.matrix(j_widen[,-1])
-)
+ 	# Total number of grid points
+ 	G = G, 
+ 	# The occupancy covariates of the latent state Poisson process
+ 	occ_covs = psi_covs,
+ 	# The detection covariates for the presence only data
+ 	po_det_covs = po_det_covs,
+ 	# The detection covariates for the presence / absence data
+ 	pa_det_covs = pa_det_covs,
+ 	# The pixels that the presence absence data occurred
+ 	pa_pixel = y_widen$pixelID,
+ 	# The pixels that the presence only data occurred							
+ 	po_pixel = unlist(po_pixel_id),
+ 	# What season each opportunistic data point came from
+ 	opp_year = rep(1:(length(po_pixel_id)), times = npo_count),
+ 	# The number of presence only data points per season
+ 	npo = as.numeric(npo_count),
+ 	# The total number of all presence only data points
+ 	all_npo = sum(npo_count),
+ 	# The number of days a species was detected per site / season
+ 	#   for the presence absence data
+ 	y_pa = as.matrix(y_widen[,-c(1)]),
+ 	# The number of sites presence absence data was sampled
+ 	npa = nrow(y_widen),
+ 	# The log cell area, logged as the parameters are on the log scale
+ 	#   in the model.
+ 	cell_area = log(prod(res(chicago_raster)/100)),
+ 	# Ones for the 'ones' trick in JAGS (for coding up likelihood)
+ 	ones = rep(1, sum(npo_count)),
+ 	# A big constant value for 'ones' trick.
+ 	CONSTANT = 10000,
+ 	# Number of latent parameters
+ 	nlatent = ncol(psi_covs),
+ 	# Number of observational parameters, presence only
+ 	nobs_po = ncol(po_det_covs),
+ 	# Number of observational parameters, presence / absence
+ 	nobs_pa = ncol(pa_det_covs),
+ 	# Number of seasons sampled
+ 	nyear = length(po_pixel_id),
+ 	J = as.matrix(j_widen[,-c(1)]),
+ 	# GAM stuff
+ 	S1 = gam_dat$jags.data$S1,
+ 	zero = gam_dat$jags.data$zero,
+ 	X = gam_dat$jags.data$X,
+ 	nspline = length(gam_dat$jags.data$zero)
+ )
 
- y_pa_init <- my_data$y_pa
- y_pa_init[is.na(y_pa_init)] <- 0
- y_pa_init[!is.na(my_data$y_pa)] <- NA
+  y_pa_init <- my_data$y_pa
+  y_pa_init[is.na(y_pa_init)] <- 0
+  y_pa_init[!is.na(my_data$y_pa)] <- NA
 
  my_inits <- function(chain){
 	gen_list <- function(chain = chain){
-		list( 
+		list(
 			z = matrix(1, ncol = my_data$nyear, nrow = my_data$G),
 			beta_occ = rnorm(my_data$nlatent, 0, 0.25),
+			b = matrix(
+				rnorm(my_data$nspline * my_data$nyear,
+							rep(
+								gam_dat$jags.ini$b,
+								each = my_data$nyear),
+							0.1),
+				nrow = my_data$nspline,
+				ncol = my_data$nyear),
+			lambda_gam = rgamma(1, 1,1),
+			gam_tau = rgamma(1,1,1),
 			beta_pa_det = rnorm(my_data$nobs_pa, 0, 0.25),
 			beta_po_det = rnorm(my_data$nobs_po, 0, 0.25),
+			beta_po_det_mu = rnorm(my_data$nobs_po),
+			beta_po_det_tau = rgamma(my_data$nobs_po,1,1),
 			psi_mu = rnorm(1, -5, 0.25),
 			pa_mu = rnorm(1, -2.75, 0.25),
 			po_mu = rnorm(1, 3, 0.25),
@@ -539,8 +590,7 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
 			psi_season = rnorm(my_data$nyear, 0, 0.25),
 			pa_season = rnorm(my_data$nyear, 0, 0.25),
 			po_season = rnorm(my_data$nyear,0, 0.25),
-			theta = rnorm(1),
-			y_pa_init,
+			y_pa = y_pa_init,
 			.RNG.name = switch(chain,
 												 "1" = "base::Wichmann-Hill",
 												 "2" = "base::Wichmann-Hill",
@@ -553,7 +603,7 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
 			.RNG.seed = sample(1:1e+06, 1)
 		)
 	}
-	return(switch(chain,           
+	return(switch(chain,
 								"1" = gen_list(chain),
 								"2" = gen_list(chain),
 								"3" = gen_list(chain),
