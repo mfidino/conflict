@@ -89,9 +89,9 @@ m1 <- run.jags(model = "integrated_pp_dynamic_spatial_gam.R",
 							 	"occ_sd_season", "pa_sd_season", "po_sd_season"
 							 ), 
 							 adapt = 1000, 
-							 burnin = 10000, 
+							 burnin = 50000, 
 							 sample = 2000, 
-							 thin = 4,
+							 thin = 5,
 							 modules = "glm",
 							 method = 'parallel',
 							 summarise = FALSE)
