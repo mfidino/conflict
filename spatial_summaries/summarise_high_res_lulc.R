@@ -214,6 +214,11 @@ saveRDS(
 	"./data/hu10_raster.rds"
 )
 
+hu_10_raster <- raster::projectRaster(
+	hu10_raster,
+	chicago_stack
+)
+
 # Bring in income 
 income <- raster::raster(
 	"./data/Final_Income_Raster.tif"

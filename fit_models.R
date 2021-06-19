@@ -12,7 +12,7 @@
 
 my_species <- c("raccoon", "opossum", "coyote")
 
-for(animal in 2:length(my_species)){
+for(animal in 1:length(my_species)){
 	my_species <- c("opossum", "raccoon", "coyote")
 	source("sourcer.R")
 	packs <- c("lubridate", "raster", "sp", "sf", "runjags", "coda", "mgcv")
@@ -79,7 +79,7 @@ source("format_data_for_analysis.R")
 #       script above.
 m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R", 
 							 data = my_data, 
-							 n.chains = 3, 
+							 n.chains = 4, 
 							 inits = my_inits, 
 							 monitor = c(
 							 	"beta_occ", "beta_pa_det", "beta_po_det",
@@ -89,8 +89,8 @@ m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R",
 							 	"pa_sd_season", "po_sd_season"
 							 ), 
 							 adapt = 1000, 
-							 burnin = 10000, 
-							 sample = 2000, 
+							 burnin = 100000, 
+							 sample = 6250, 
 							 thin = 4,
 							 modules = "glm",
 							 method = 'parallel',
