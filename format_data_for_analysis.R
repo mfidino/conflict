@@ -150,7 +150,7 @@ for(i in 1:n_season){
   # Put the presence only location into our list object.
   po_pixel_id[[i]] <- rep(
 	  po_id,
-	  times = 1#times_to_rep
+	  times = 1
   )
 }
 
@@ -263,7 +263,7 @@ sc_spatial <- sf::st_transform(
 )
 
 city_outline <- sf::st_read(
-	"D:/GIS/IL City Shape Files", 
+	"./data/IL City Shape Files", 
 	layer = "tl_2017_17_place"
 ) %>% 
 	dplyr::select("NAME")
