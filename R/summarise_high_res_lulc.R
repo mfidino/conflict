@@ -292,7 +292,7 @@ saveRDS(
 
 raster::writeRaster(
 	all_raw_layers,
-	filename="chicago_variables_raster_500.tif",
+	filename="./data/chicago_variables_raster_500.tif",
 	options="INTERLEAVE=BAND",
 	overwrite=TRUE
 )

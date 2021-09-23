@@ -6,7 +6,7 @@
 #
 #######################################
 
-source("sourcer.R")
+source("./R/sourcer.R")
 packs <- c(
 	"lubridate", "raster", "sp", "sf", 
 	"runjags", "coda", "dplyr", "mgcv")
@@ -36,7 +36,7 @@ names(my_sum) <- c("coyote", "opossum", "raccoon")
 # just getting the data together so we have the 
 #  occupancy covariates and the like.
 species <- "raccoon"
-source("format_data_for_analysis.R")
+source("./R/format_data_for_analysis.R")
 
 # Plot out the regression results for baseline occupancy
 #  and conflict (This is for what I think will be
@@ -654,8 +654,3 @@ for(i in 1:9){
 }
 dev.off()
 
-
-t1 <- quantile(1 - (1 - plogis(mm[[3]][,"pa_mu"]))^28, probs = c(0.025,0.5,0.975))
-round(t1,2)
-
-head(my_sum[[3]][,1:4], 10)

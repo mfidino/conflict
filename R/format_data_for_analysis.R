@@ -492,7 +492,7 @@ occ_covs <- occ_covs[complete.cases(occ_covs),
  tmp_dat <- data.frame(tmp_dat)
  
  
- jags.file <- "test.jags"
+ jags.file <- "./JAGS/test.jags"
 
  # Thi
  offie <- log(prod(res(chicago_raster)/100))

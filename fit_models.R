@@ -11,7 +11,7 @@ my_species <- c("opossum", "raccoon", "coyote")
 
 for(animal in 1:length(my_species)){
 	
-	source("sourcer.R")
+	source("./R/sourcer.R")
 	packs <- c(
 		"lubridate", "raster", "sp", "sf", "runjags", "coda", "mgcv"
 	)
@@ -23,7 +23,7 @@ for(animal in 1:length(my_species)){
   
   # print it out to console so I can see where we are at.
   cat(species)
-  source("format_data_for_analysis.R")
+  source("./R/format_data_for_analysis.R")
   
   # Note: my_data is the data list that is created from the 
   #       script above.

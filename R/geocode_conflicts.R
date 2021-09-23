@@ -6,11 +6,6 @@
 #
 ####################################
 
-# Note:
-#   In the event that you are querying over 2.5K locations this
-#   script will run over multiple days so you do not incur
-#   charges from google. As such, once you run this it's
-#   best to just leave it in the background. 
 
 # load packages
 library(ggmap)
@@ -18,7 +13,7 @@ library(keyring)
 library(dplyr)
 
 # load utility script to bring some helper functions
-source("utility_script.R")
+source("./R/sourcer.R")
 
 species <- "coyote"
 

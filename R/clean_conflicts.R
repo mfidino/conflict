@@ -13,11 +13,12 @@
 
 # The goal is to read in the data from the raw conflict folder, clean it, and
 #  save the cleaned data to conflict_clean
-# load packages
-library(dplyr)
+
 
 # load utility script for helper functions
-source("utility_script.R")
+source("./R/sourcer.R")
+
+package_load("dplyr")
 
 # Read in the hw conflicts, update the column headers, and clean the data
 raccoon <- read.csv(
@@ -25,6 +26,11 @@ raccoon <- read.csv(
 	stringsAsFactors = FALSE
 ) %>% 
 	update_foia_columns()
+
+# drop uncertain species
+if(!file.exists("./data/conflict_clean/raccoon.csv")){
+drop_uncertain_species(raccoon, "raccoon")
+}
 
 # clean the data
 
@@ -35,12 +41,13 @@ opossum <- read.csv(
 ) %>% 
 	update_foia_columns()
 
-# drop the first 3 rows
+# drop the first 3 rows, which are blank
 opossum <- opossum[-c(1:3),]
 
-opossum <- read.csv("./data/conflict_clean/opossum.csv")
+if(!file.exists("./data/conflict_clean/opossum.csv")){
+	drop_uncertain_species(opossum, "opossum")
+}
 
-drop_uncertain_species(opossum, "opossum")
 
 coyote <- read.csv(
 	file = "./data/conflicts_raw/coyote.csv",
@@ -52,4 +59,6 @@ coyote <- read.csv(
 coyote <- coyote[-c(1:3),]
 
 # go through and clean descriptions.
-drop_uncertain_species(coyote, "coyote")
+if(!file.exists("./data/conflict_clean/coyote.csv")){
+	drop_uncertain_species(coyote, "coyote")
+}

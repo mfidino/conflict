@@ -111,8 +111,6 @@ drop_uncertain_species <- function(data, species){
 ##########################
 
 # A convience function to geocode data from the google api
-#   This is just so it can automatically run the queries each
-#   day at 6 AM.
 geocode_wrapper <- function(
 	data,
 	address_column){
