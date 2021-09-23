@@ -40,6 +40,11 @@ dorazio*
 *.tiff
 *.RDS
 
-/foias/*
+foias/
 *.xls
 *.xlsx
+
+*.pptx
+
+summer_2013_edit.R
+fall_2013_edit.R
