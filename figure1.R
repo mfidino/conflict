@@ -1,7 +1,8 @@
 ##############################################
 #
 #
-# A script for the first figure of this paper
+# A script for a rough first figure of this paper
+# I cleaned it up a bit more in inkscape
 #
 # M. Fidino
 #

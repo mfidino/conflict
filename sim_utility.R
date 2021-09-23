@@ -7,19 +7,6 @@
 ##################################
 
 
-# this function loads pacakges and installs them if needed
-package_load<-function(packages = NA, quiet=TRUE, verbose=FALSE, warn.conflicts=FALSE){
-	
-	# download required packages if they're not already
-	pkgsToDownload<- packages[!(packages  %in% installed.packages()[,"Package"])]
-	if(length(pkgsToDownload)>0)
-		install.packages(pkgsToDownload, repos="http://cran.us.r-project.org", quiet=quiet, verbose=verbose)
-	
-	# then load them
-	for(i in 1:length(packages))
-		require(packages[i], character.only=T, quietly=quiet, warn.conflicts=warn.conflicts)
-}
-
 # gen_mvn: 
 #  simulate covariate values over cells in a raster
 #

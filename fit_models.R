@@ -26,55 +26,6 @@ species <- my_species[animal]
 cat(species)
 source("format_data_for_analysis.R")
 
-#y_pa_init <- my_data$y_pa
-#y_pa_init[is.na(y_pa_init)] <- 0
-#y_pa_init[!is.na(my_data$y_pa)] <- NA
-
-# my_inits <- function(chain){
-# 	gen_list <- function(chain = chain){
-# 		list(
-# 			z = matrix(1, ncol = my_data$nyear, nrow = my_data$G),
-# 			beta_occ = rnorm(my_data$nlatent, 0, 0.25),
-# 			temp_occ = rnorm(2),
-# 			beta_pa_det = rnorm(my_data$nobs_pa, 0, 0.25),
-# 			beta_po_det = rnorm(my_data$nobs_po, 0, 0.25),
-# 			beta_po_det_mu = rnorm(my_data$nobs_po),
-# 			beta_po_det_tau = rgamma(my_data$nobs_po,1,1),
-# 			psi_mu = rnorm(1, -5, 0.25),
-# 			pa_mu = rnorm(1, -2.75, 0.25),
-# 			po_mu = rnorm(1, 3, 0.25),
-# 			g_tau = rgamma(1, 2, 4),
-# 			g_re = rnorm(my_data$G, 0, 0.25),
-# 			pa_tau_season = rgamma(1, 2, 4),
-# 			po_tau_season = rgamma(1, 2, 4),
-# 			pa_season = rnorm(my_data$nyear, 0, 0.25),
-# 			po_season = rnorm(my_data$nyear,0, 0.25),
-# 			y_pa = y_pa_init,
-# 			.RNG.name = switch(chain,
-# 												 "1" = "base::Wichmann-Hill",
-# 												 "2" = "base::Wichmann-Hill",
-# 												 "3" = "base::Super-Duper",
-# 												 "4" = "base::Mersenne-Twister",
-# 												 "5" = "base::Wichmann-Hill",
-# 												 "6" = "base::Marsaglia-Multicarry",
-# 												 "7" = "base::Super-Duper",
-# 												 "8" = "base::Mersenne-Twister"),
-# 			.RNG.seed = sample(1:1e+06, 1)
-# 		)
-# 	}
-# 	return(switch(chain,
-# 								"1" = gen_list(chain),
-# 								"2" = gen_list(chain),
-# 								"3" = gen_list(chain),
-# 								"4" = gen_list(chain),
-# 								"5" = gen_list(chain),
-# 								"6" = gen_list(chain),
-# 								"7" = gen_list(chain),
-# 								"8" = gen_list(chain)
-# 	)
-# 	)
-# }
-
 # Note: my_data is the data list that is created from the 
 #       script above.
 m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R", 
