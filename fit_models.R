@@ -7,10 +7,10 @@
 #
 #############################################
 
-my_species <- c("raccoon", "opossum", "coyote")
+my_species <- c("opossum", "raccoon", "coyote")
 
 for(animal in 1:length(my_species)){
-	my_species <- c("opossum", "raccoon", "coyote")
+	
 	source("sourcer.R")
 	packs <- c(
 		"lubridate", "raster", "sp", "sf", "runjags", "coda", "mgcv"
@@ -27,7 +27,7 @@ for(animal in 1:length(my_species)){
   
   # Note: my_data is the data list that is created from the 
   #       script above.
-  m1 <- run.jags(model = "integrated_pp_dynamic_prd_sre.R", 
+  m1 <- run.jags(model = "./JAGS/dynamic_integrated_occupancy_gam.R", 
   							 data = my_data, 
   							 n.chains = 4, 
   							 inits = my_inits, 
@@ -69,6 +69,9 @@ for(animal in 1:length(my_species)){
   			 main = to_write[i], col = rainbow(5)[mc[,1]])	
   	dev.off()
   }
-  rm(list = ls())
+  # remove everything but the my_species object
+  to_go <- ls()
+  to_go <- to_go[-grep("my_species", to_go)]
+  rm(list = to_go)
 
 }
