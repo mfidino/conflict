@@ -51,3 +51,21 @@ And here is what these variables look like plotted out across the city of Chicag
 
 <div align="center"><img width="900" height="auto" src="./figures/spatial_variables.jpeg" alt="A plot of the 7 spatial variables calculated across Chicago" /></div>
 
+- **`./data/camera_trap_detections_sp10_sp_13.csv`**: The summarised detection / non-detection camera trap data between April 2010 and April 2013. 
+
+| Column       | Type      | Description                                                                                                                                                                                                                                    |
+|--------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `Season`     | Category  | A seasonal code for the season the data comes from. It combines the first two letters of the season and the last two digits of the year. Seasonal codes are SP = Spring, SU = Summer, FA = Fall, WI = Winter. Data collection started in 2010. |
+| `Week`       | Category  | The week of sampling. Ranges from Week 1 to Week 4                                                                                                                                                                                             |
+| `Date`       | Date      | The sampling day                                                                                                                                                                                                                               |
+| `SeasonWeek` | Category  | The Season and Week columns combined                                                                                                                                                                                                           |
+| `StationID`  | Category  | The site abbreviation                                                                                                                                                                                                                          |
+| `SurveyID`   | Category  | The site abbreviation combined with the season code                                                                                                                                                                                            |
+| `IDWeek`     | Character | The survey ID combined with the Date                                                                                                                                                                                                           |
+| `Coyote`     | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational.                                                                          |
+| `Opossum`    | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational.                                                                          |
+| `Raccoon`    | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational.                                                                          |
+| `Redfox`     | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational.                                                                          |
+| `Skunk`      | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational. Specifically, this is the striped skunk.                                 |
+
+
