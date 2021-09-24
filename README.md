@@ -70,12 +70,14 @@ And here is what these variables look like plotted out across the city of Chicag
 
 - **`./data/chicago_variables_raster_500.tif`**: This is the `./data/all_raw_layers.RDS` file except saved as a raster file. See above for all information about the covariates included.
 - **`./data/fall_2013.csv`**: The summarised detection / non-detection camera trap data for October 2013. Stored in a seperate file because we used a different database for these data.
+
 | Column         | Type     | Description                                                                                                                                               |
 |----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `CommonName`   | Category | The species the detection record is associated to. Has the same species names as the columns in `./data/camera_trap_detections_sp10_sp13.csv`             |
 | `locationAbbr` | Category | The site abbreviation                                                                                                                                     |
 | `count`        | Integer  | The number of days a species was detected during sampling. NA if camera was not active. 0 if the species was not detected but the camera was operational. |
 | `J`            | Category | The number of days the camera was operational                                                                                                             |
+
 -**`./data/station_coords.csv`**: The coordinates of all the camera trapping locations.
 
 
