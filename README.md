@@ -25,7 +25,7 @@ This repository stores all of the data and code used to fit the integrated model
 This document here serves as a road map that describes all of the files present in this repository.
 
 
-### The data sub-folder (`./data`)
+#### The data sub-folder (`./data`)
 
 Right now the associated scripts on this repo will simulate and analyze presence-only data with detection / non-detection data from planned surveys. Models to estimate the set parameter values from the simulated data are written in `JAGS`. 
 
