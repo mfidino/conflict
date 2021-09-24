@@ -20,7 +20,12 @@ This model, however, is not "new". I have essentially combined the [Koshkina et 
 
 
 
-This repository stores all of the data and code used to fit the integrated model to the Chicago, Illinois nuisance wildlife complaint data and the camera trap data we collected between 2011 and 2013. The folder organization seperates the data (`./data`), R code (`./R`), JAGS model (`./JAGS`), and figures from the manuscript (`./figures`)
+This repository stores all of the data and code used to fit the integrated model to the Chicago, Illinois nuisance wildlife complaint data and the camera trap data we collected between 2011 and 2013. The folder organization seperates the data (`./data`),figures from the manuscript (`./figures`), JAGS model (`./JAGS`), the mcmc outputs from the model we fit to the data for coyote, Virginia opossum, and raccoon (`./mcmc_outputs`), and  R code (`./R`).
+
+This document here serves as a road map that describes all of the files present in this repository.
+
+
+### The data sub-folder (`./data`)
 
 Right now the associated scripts on this repo will simulate and analyze presence-only data with detection / non-detection data from planned surveys. Models to estimate the set parameter values from the simulated data are written in `JAGS`. 
 
