@@ -94,4 +94,32 @@ And here is what these variables look like plotted out across the city of Chicag
 | `locationAbbr` | Category | The site abbreviation                                                                                                                                     |
 | `count`        | Integer  | The number of days a species was detected during sampling. NA if camera was not active. 0 if the species was not detected but the camera was operational. |
 | `J`            | Category | The number of days the camera was operational                                                                                                             |
+#### The conflict_clean sub-folder (`./data/conflict_clean`):
 
+This stores all of the cleaned and geocoded nuisance wildlife reports between 2011 and 2013. There is a seperate file for each species (`coyote.csv`, `opossum.csv`, and `raccoon.csv`). The format of these three csv files is:
+
+| Column           | Type       | Description                                                                                                   |
+|------------------|------------|---------------------------------------------------------------------------------------------------------------|
+| `type`           | Category   | The kind of report made (e.g., injured animal, nuisance animal, etc.)                                         |
+| `request_number` | Category   | The unique identifying code for each request                                                                  |
+| `date`           | Date       | The date of the report. In day-month-year format                                                              |
+| `year`           | Year       | The year of the report                                                                                        |
+| `month`          | Month      | The month of the report                                                                                       |
+| `block`          | Address    | The block address of where the report occurred                                                                |
+| `description`    | Text       | A text description of the report                                                                              |
+| `lon`            | Coordinate | The longitude of a report (i.e., x-axis), geocoded from the block column. Coordinate reference system = 4326. |
+| `lat`            | Coordinate | The Latitude of a report (i.e., y-axis), geocoded from the block column. Coordinate reference system = 4326.  |
+
+#### The conflict_raw sub-folder (`./data/conflict_raw`):
+
+This stores all of the raw nuisance wildlife reports between 2011 and 2013 provided by the city of Chicago. There is a seperate file for each species (`coyote.csv`, `fox.csv`, `opossum.csv`, and `raccoon.csv`). While the fox csv is still here, we decided not to include it in the analysis as data was very sparse for the camera trapping and complaint data. These are in a somewhat strange format (e.g., the headers are sometimes three rows down), and is cleaned via `./R/clean_conflicts.R`. Once the headers do start in a file, the columns are:
+
+| Column               | Type     | Description                                                           |
+|----------------------|----------|-----------------------------------------------------------------------|
+| `Type`               | Category | The kind of report made (e.g., injured animal, nuisance animal, etc.) |
+| `Service Request No` | Category | The unique identifying code for each request                          |
+| `Created Date`       | Date     | The date of the report. In day-month-year format                      |
+| `Created Year`       | Year     | The year of the report                                                |
+| `Created Month`      | Month    | The month of the report                                               |
+| `Block Address`      | Address  | The block address of where the report occurred                        |
+| `Description`        | Text     | A text description of the report                                      |
