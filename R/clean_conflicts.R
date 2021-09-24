@@ -22,7 +22,7 @@ package_load("dplyr")
 
 # Read in the hw conflicts, update the column headers, and clean the data
 raccoon <- read.csv(
-	file = "./data/conflicts_raw/raccoon.csv",
+	file = "./data/conflict_raw/raccoon.csv",
 	stringsAsFactors = FALSE
 ) %>% 
 	update_foia_columns()
@@ -36,7 +36,7 @@ drop_uncertain_species(raccoon, "raccoon")
 
 
 opossum <- read.csv(
-	file = "./data/conflicts_raw/opossum.csv",
+	file = "./data/conflict_raw/opossum.csv",
 	stringsAsFactors = FALSE
 ) %>% 
 	update_foia_columns()
@@ -50,7 +50,7 @@ if(!file.exists("./data/conflict_clean/opossum.csv")){
 
 
 coyote <- read.csv(
-	file = "./data/conflicts_raw/coyote.csv",
+	file = "./data/conflict_raw/coyote.csv",
 	stringsAsFactors = FALSE,
 ) %>% 
 	update_foia_columns()
