@@ -11,6 +11,10 @@ library(dplyr)
 library(sf)
 library(fasterize)
 
+if(!file.exists("./data/raw_spatial_data")){
+	dir.create("./data/raw_spatial_data")
+}
+
 # read in the chicago data layer
 my_raster_path <- 
 	"D:/GIS/cmap/landcover_2010_chicagoregion.img"
@@ -118,13 +122,13 @@ chicago_stack <- raster::mask(
 # save as RDS
 saveRDS(
 	chicago_stack,
-	"./data/high_res_reduction.rds"
+	"./raw_spatial_data/high_res_reduction.rds"
 )
 
 # save it as a multi-layer raster as well
 raster::writeRaster(
 	chicago_stack,
-	filename="chicago_highres_500res.tif",
+	filename="./raw_spatial_data/chicago_highres_500res.tif",
 	options="INTERLEAVE=BAND",
 	overwrite=TRUE
 )
@@ -211,7 +215,7 @@ hu10_raster <- fasterize::fasterize(
 # save the rds
 saveRDS(
 	hu10_raster,
-	"./data/hu10_raster.rds"
+	"./raw_spatial_data/hu10_raster.rds"
 )
 
 hu_10_raster <- raster::projectRaster(
@@ -221,7 +225,7 @@ hu_10_raster <- raster::projectRaster(
 
 # Bring in income 
 income <- raster::raster(
-	"./data/Final_Income_Raster.tif"
+	"./raw_spatial_data/Final_Income_Raster.tif"
 )
 
 income <- raster::projectRaster(
@@ -238,7 +242,7 @@ income <- raster::mask(
 
 # bring in vacancy
 vacancy <- raster::raster(
-	"./data/Vacancy_311.tif"
+	"./raw_spatial_data/Vacancy_311.tif"
 )
 
 vacancy <- raster::projectRaster(
@@ -253,7 +257,7 @@ vacancy <- raster::mask(
 
 # and distance to a natural water source
 water <- raster::raster(
-	"./data/Final_WaterDist_Raster.tif"
+	"./raw_spatial_data/Final_WaterDist_Raster.tif"
 )
 
 water <- projectRaster(
