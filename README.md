@@ -129,19 +129,21 @@ This stores all of the raw nuisance wildlife reports between 2011 and 2013 provi
 
 This folder houses some of the raw figures I generated in `R` (which I cleaned up using Inkscape), as well as other figures that were publication ready. All of the extra "cleaning" I needed to do was related to the maps I had made (there was too much spacing between images).
 
-- **./figures/figure_1.pdf**: Figure 1 in the manuscript, publication ready, which is an example of the modeling framework.
-- **./figures/figure_1.png**: Figure 1 as a png so I could use it in this README.md.
-- **./figures/figure_1.svg**: Figure 1 as a scaleable vector graphic.
-- **./figures/figure_2.pdf**: Figure 2 in the manuscript, publication ready, which shows each species distribution, their conflict potential, and where they are most likely to come in to conflict with humans.
-- **./figures/figure_2.svg**: Figure 2 as a scaleable vector graphic.
-- **./figures/figure_3.tiff**: Figure 3 in the manuscript, publication ready, which shows the slope terms from the model.
-- **./figures/figure_4.tiff**: Figure 4 in the manuscript, publication ready, which shows the conflict potential response for different covariates.
-- **./figures/rough_1.svg**: Output from R that was used to generate figure 1.
-- **./figures/spatial_variables.jpeg**: Plot of the spatial variables used in the model, used in this README.md.
-- **./figures/supl_coyote.png**: Supplmental figure for coyote, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.
-- **./figures/supl_coyote.svg**: Same, but as a scaleable vector graphic (output from R).
-- **./figures/supl_opossum.png**: Supplmental figure for Virginia opossum, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.
-- **./figures/supl_opossum.svg**: Same, but as a scaleable vector graphic (output from R).
-- **./figures/supl_raccoon.png**: Supplmental figure for raccoon, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.
-- **./figures/supl_raccoon.svg**: Same, but as a scaleable vector graphic (output from R).
 
+|File|Description|
+|---|---|
+|**`./figures/figure_1.pdf`** | Figure 1 in the manuscript, publication ready, which is an example of the modeling framework.|
+|**`./figures/figure_1.png`** | Figure 1 as a png so I could use it in this README.md.|
+|**`./figures/figure_1.svg`** | Figure 1 as a scaleable vector graphic.|
+|**`./figures/figure_2.pdf`** | Figure 2 in the manuscript, publication ready, which shows each species distribution, their conflict potential, and where they are most likely to come in to conflict with humans.|
+|**`./figures/figure_2.svg`** | Figure 2 as a scaleable vector graphic.|
+|**`./figures/figure_3.tiff`** | Figure 3 in the manuscript, publication ready, which shows the slope terms from the model.|
+|**`./figures/figure_4.tiff`** | Figure 4 in the manuscript, publication ready, which shows the conflict potential response for different covariates.|
+|**`./figures/rough_1.svg`** | Output from R that was used to generate figure 1.|
+|**`./figures/spatial_variables.jpeg`** | Plot of the spatial variables used in the model, used in this README.md.|
+|**`./figures/supl_coyote.png`** | Supplmental figure for coyote, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.|
+|**`./figures/supl_coyote.svg`** | Same, but as a scaleable vector graphic (output from R).|
+|**`./figures/supl_opossum.png`** | Supplmental figure for Virginia opossum, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.|
+|**`./figures/supl_opossum.svg`** | Same, but as a scaleable vector graphic (output from R).|
+|**`./figures/supl_raccoon.png`** | Supplmental figure for raccoon, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.|
+|**`./figures/supl_raccoon.svg`** | Same, but as a scaleable vector graphic (output from R).|
