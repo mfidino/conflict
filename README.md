@@ -112,7 +112,7 @@ This stores all of the cleaned and geocoded nuisance wildlife reports between 20
 
 #### The conflict_raw sub-folder (`./data/conflict_raw`):
 
-This stores all of the raw nuisance wildlife reports between 2011 and 2013 provided by the city of Chicago. There is a seperate file for each species (`coyote.csv`, `fox.csv`, `opossum.csv`, and `raccoon.csv`). While the fox csv is still here, we decided not to include it in the analysis as data was very sparse for the camera trapping and complaint data. These are in a somewhat strange format (e.g., the headers are sometimes three rows down), and is cleaned via `./R/clean_conflicts.R`. Once the headers do start in a file, the columns are:
+This stores all of the raw nuisance wildlife reports between 2011 and 2013 provided by the city of Chicago. There is a seperate file for each species (`coyote.csv`, `fox.csv`, `opossum.csv`, and `raccoon.csv`). While the fox csv is still here, we decided not to include it in the analysis as data were sparse for the camera trapping and complaint data. These are in a somewhat strange format (e.g., the headers are sometimes three rows down), and is cleaned via `./R/clean_conflicts.R`. Once the headers do start in a file, the columns are:
 
 | Column               | Type     | Description                                                           |
 |----------------------|----------|-----------------------------------------------------------------------|
