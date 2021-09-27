@@ -10,7 +10,7 @@ Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Ad
 4. [The data folder (`./data`)](#the-data-folder-data)
 5. [The figures folder (`./figures`)](#the-figures-folder-figures)
 6. [The JAGS folder (`./JAGS`)](#the-jags-folder-jags)
-7. [The mcmc output folder (`./mcmc_output`)](#the-mcmc-output-folder-mcmc-output)
+7. [The mcmc output folder (`./mcmc_output`)](#the-mcmc-output-folder-mcmc_output)
 
 
 ## What does this model do?
