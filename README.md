@@ -11,6 +11,7 @@ Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Ad
 5. [The figures folder (`./figures`)](#the-figures-folder-figures)
 6. [The JAGS folder (`./JAGS`)](#the-jags-folder-jags)
 7. [The mcmc output folder (`./mcmc_output`)](#the-mcmc-output-folder-mcmc_output)
+8. [The R folder (`./R`)](#the-r-folder-r)
 
 
 ## What does this model do?
@@ -172,7 +173,7 @@ This folder houses some of the raw figures I generated in `R` (which I cleaned u
 
 [Back to table of contents ⤒](#a-repository-for)
 
-### The JAGS folder (`./JAGS)
+### The JAGS folder (`./JAGS`)
 
 This folder houses one script, which is the `JAGS` model that is fit to the data, which is titled `dynamic_integrated_occupancy_gam.R`. The code is commented out within the model pretty well (I had to write it in a way that was more difficult to read because it ran far faster that way).
 
@@ -191,6 +192,27 @@ my_mcmc <- do.call("rbind", my_model$mcmc)
 #### The diagnostic plots sub-folder (`./mcmc_output/diagnostic_plots)
 
 This folder has three sub-folders (one for coyote, one for opossum, and one for raccoon). Inside of each of these are the traceplots for each model parameter. They are generated when `fit_models.R` is run.  See `./JAGS/dynamic_integrated_occupancy_gam.R` for where each parameter fits into the model.
+
+[Back to table of contents ⤒](#a-repository-for)
+
+### The R folder (`./R`)
+
+This folder has 7 R scripts, plus an additional sub-folder titled `./R/functions` that contains 2 seperate scripts of different functions for running the analysis or plotting the results.
+
+| File                                 | Description                                                                                                                                                                                                                                                                                                                                                            |
+|--------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`./R/clean_conflicts.R`**          | This script goes through the raw conflict files in `./data/conflict_raw` and uses regular expressions to query nuisance wildlife reports where the species ID may be uncertain. It then loops through the descriptions of each offending report and prints out the description tied to the report (and allows the user to determine if the report should be censored). |
+| **`./R/figure1.R`**                  | The script I wrote to create the first figure in the manuscript.                                                                                                                                                                                                                                                                                                       |
+| **`./R/format_data_for_analysis.R`** | The main workhorse of this project. All of the data is pulled in with this script and it gets formatted and made ready to fit into a JAGS model. The main outputs from this are `data_list`, which is the list object supplied to `JAGS`, as well as the `my_inits()` function, which supplies initial values to JAGS. It's commented out as well.                     |
+| **`./R/geocode_conflicts.R`**        | Once `./R/clean_conflicts.R` has been ran, this is the script that will take the block-level address and geocode it to latitude and longitude.                                                                                                                                                                                                                         |
+| **`./R/plots_models.R`**             | The script I wrote to make the rest of the figures for this manuscript. `./R/format_data_for_analysis.R` still gets ran as it provides a lot of the spatial data we need for making maps.                                                                                                                                                                              |
+| **`./R/sourcer.R`**                  | A script that just sources all of the functions in `./R/functions`. That way I can just call `source(./R/sourcer.R)` instead of sourcing each file in that folder.                                                                                                                                                                                                     |
+| **`./summarise_high_res_lulc.R`**    | The spatial environmental data we used had sub-meter resolution, which we needed to aggregate up to 500 meters for this analysis. This script does that aggregration and prepares the environmental data layers for statistical analysis.                                                                                                                              |
+
+#### The functions sub-folder (`./R/functions`)
+
+This sub-folder houses a bunch of custom functions I wrote to streamline this project. I've commented out all of the functions and their arguments in the scripts themselves, so I leave those who are interested in what functions are there to explore the scripts themselves. The two scripts here are`./R/functions/plot_utility.R`, which houses a lot of the functions I used to make the figures for the project, and `./R/functions/utility_script.R`, which was a catchall for non-plot related functions.
+
 
 [Back to table of contents ⤒](#a-repository-for)
 
