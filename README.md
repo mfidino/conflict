@@ -8,12 +8,13 @@ Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Ad
 
 This is a dynamic integrated occupancy that model combines presence-only human-wildlife conflict data with detection/non-detection data from a wildlife survey (e.g,. camera trapping). Doing so allows you to estimate a species distribution (Figure 1A), their conflict potential (Figure 1B), and where conflict actually occurs on the landscape (Figure 1C). This is useful if you are interested in controlling for a species distribution when making predictions about where human-wildlife conflict occurs (which we should be interested in).
 
-<div align="center"><img width="600" height="auto" src="./figures/rough_1.png" alt="Rought draft of figure 1 from the manuscript. The left plot shows a species distribution, which is highest on the lower left of the plot. The center plot shows a species conflict potential, which is highest on the right side of the plot. The right plot shows where conflict is most likely to occur on the landscape, and is a product of the left and center plots. As such, there is a smaller "hot spot" towards the center of this plot." /></div>
+<div align="center"><img width="600" height="auto" src="./figures/figure_1.png" alt="Rought draft of figure 1 from the manuscript. The left plot shows a species distribution, which is highest on the lower left of the plot. The center plot shows a species conflict potential, which is highest on the right side of the plot. The right plot shows where conflict is most likely to occur on the landscape, and is a product of the left and center plots. As such, there is a smaller "hot spot" towards the center of this plot." /></div>
 
-Figure 1. A species distribution on the landscape (A), where the species has the greatest likelihood of coming into conflict with humans given their presence across the entire landscape (B), and the expected distribution of where conflict actually occurs on the landscape (C), which is the product of where the species is (A) and where conflict is most likely to occur (B).
+**Figure 1.** A species distribution on the landscape (A), where the species has the greatest likelihood of coming into conflict with humans given their presence across the entire landscape (B), and the expected distribution of where conflict actually occurs on the landscape (C), which is the product of where the species is (A) and where conflict is most likely to occur (B).
 
+</br>
 
-This model, however, is not "new". I have essentially combined the [Koshkina et al. (2017)](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12738) model, with the generalized additive model portion of of [Rushing et al. (2019)](https://www.nature.com/articles/s41598-019-48851-5). In brief, the latent occupancy probability during each time step has a spatial smoothing term applied (to control for spatial autocorrelation). Between time periods, the spatial smoothing term at time *t* is partially informed by the spatial smoothing term at time *t-1* (see our paper, or the Rushing et al. paper to see how this works).
+This model, however, is not "new". I have essentially combined the [Koshkina et al. (2017)](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12738) model with the generalized additive model portion of [Rushing et al. (2019)](https://www.nature.com/articles/s41598-019-48851-5). In brief, the latent occupancy probability during each time step has a spatial smoothing term applied (to control for spatiotemporal autocorrelation). Between time periods, the spatial smoothing term at time *t* is partially informed by the spatial smoothing term at time *t-1* (see our paper, or the Rushing et al. paper to see how this works).
 
 
 ## What's in this repository?
@@ -25,13 +26,13 @@ This repository stores all of the data and code used to fit the integrated model
 This document here serves as a road map that describes all of the files present in this repository.
 
 
-#### The working directory
+### The working directory
 
 Aside from the aforementioned folders, the working directory here stores the `.gitignore` file for this repository, this README file (`README.md`) the `.Rproj` file (for if you are using RStudio, `conflict.Rproj`), and a single R script (`fit_models.R`).
 
 I have kept this single script outside of the `./R` folder because it would be the one script you need to run if you were interested in fitting the models to these data. On my computer it took a little over a week to run all three of these models. This script 1) iterates through the three species in a `for` loop 2) pulls in the relevant data and format it for analysis 3) fits the JAGS model and 4) saves the mcmc output and make traceplots of all model parameters in the `./mcmc_output` folder. 
 
-#### The data folder (`./data`)
+### The data folder (`./data`)
 
 This folder has 6 files and 2 sub-folders.
 
@@ -94,4 +95,53 @@ And here is what these variables look like plotted out across the city of Chicag
 | `locationAbbr` | Category | The site abbreviation                                                                                                                                     |
 | `count`        | Integer  | The number of days a species was detected during sampling. NA if camera was not active. 0 if the species was not detected but the camera was operational. |
 | `J`            | Category | The number of days the camera was operational                                                                                                             |
+#### The conflict_clean sub-folder (`./data/conflict_clean`):
+
+This stores all of the cleaned and geocoded nuisance wildlife reports between 2011 and 2013. There is a seperate file for each species (`coyote.csv`, `opossum.csv`, and `raccoon.csv`). The format of these three csv files is:
+
+| Column           | Type       | Description                                                                                                   |
+|------------------|------------|---------------------------------------------------------------------------------------------------------------|
+| `type`           | Category   | The kind of report made (e.g., injured animal, nuisance animal, etc.)                                         |
+| `request_number` | Category   | The unique identifying code for each request                                                                  |
+| `date`           | Date       | The date of the report. In day-month-year format                                                              |
+| `year`           | Year       | The year of the report                                                                                        |
+| `month`          | Month      | The month of the report                                                                                       |
+| `block`          | Address    | The block address of where the report occurred                                                                |
+| `description`    | Text       | A text description of the report                                                                              |
+| `lon`            | Coordinate | The longitude of a report (i.e., x-axis), geocoded from the block column. Coordinate reference system = 4326. |
+| `lat`            | Coordinate | The Latitude of a report (i.e., y-axis), geocoded from the block column. Coordinate reference system = 4326.  |
+
+#### The conflict_raw sub-folder (`./data/conflict_raw`):
+
+This stores all of the raw nuisance wildlife reports between 2011 and 2013 provided by the city of Chicago. There is a seperate file for each species (`coyote.csv`, `fox.csv`, `opossum.csv`, and `raccoon.csv`). While the fox csv is still here, we decided not to include it in the analysis as data were sparse for the camera trapping and complaint data. These are in a somewhat strange format (e.g., the headers are sometimes three rows down), and is cleaned via `./R/clean_conflicts.R`. Once the headers do start in a file, the columns are:
+
+| Column               | Type     | Description                                                           |
+|----------------------|----------|-----------------------------------------------------------------------|
+| `Type`               | Category | The kind of report made (e.g., injured animal, nuisance animal, etc.) |
+| `Service Request No` | Category | The unique identifying code for each request                          |
+| `Created Date`       | Date     | The date of the report. In day-month-year format                      |
+| `Created Year`       | Year     | The year of the report                                                |
+| `Created Month`      | Month    | The month of the report                                               |
+| `Block Address`      | Address  | The block address of where the report occurred                        |
+| `Description`        | Text     | A text description of the report                                      |
+
+### The figures folder (`./figures`)
+
+This folder houses some of the raw figures I generated in `R` (which I cleaned up using Inkscape), as well as other figures that were publication ready. All of the extra "cleaning" I needed to do was related to the maps I had made (there was too much spacing between images).
+
+- **./figures/figure_1.pdf**: Figure 1 in the manuscript, publication ready, which is an example of the modeling framework.
+- **./figures/figure_1.png**: Figure 1 as a png so I could use it in this README.md.
+- **./figures/figure_1.svg**: Figure 1 as a scaleable vector graphic.
+- **./figures/figure_2.pdf**: Figure 2 in the manuscript, publication ready, which shows each species distribution, their conflict potential, and where they are most likely to come in to conflict with humans.
+- **./figures/figure_2.svg**: Figure 2 as a scaleable vector graphic.
+- **./figures/figure_3.tiff**: Figure 3 in the manuscript, publication ready, which shows the slope terms from the model.
+- **./figures/figure_4.tiff**: Figure 4 in the manuscript, publication ready, which shows the conflict potential response for different covariates.
+- **./figures/rough_1.svg**: Output from R that was used to generate figure 1.
+- **./figures/spatial_variables.jpeg**: Plot of the spatial variables used in the model, used in this README.md.
+- **./figures/supl_coyote.png**: Supplmental figure for coyote, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.
+- **./figures/supl_coyote.svg**: Same, but as a scaleable vector graphic (output from R).
+- **./figures/supl_opossum.png**: Supplmental figure for Virginia opossum, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.
+- **./figures/supl_opossum.svg**: Same, but as a scaleable vector graphic (output from R).
+- **./figures/supl_raccoon.png**: Supplmental figure for raccoon, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.
+- **./figures/supl_raccoon.svg**: Same, but as a scaleable vector graphic (output from R).
 
