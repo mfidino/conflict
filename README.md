@@ -3,7 +3,7 @@
 
 Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Combining nuisance wildlife reports with wildlife monitoring data to estimate the probability of human-wildlife conflict relative to a species’ underlying distribution.
 
-[](#longshot)
+
 1. [What does this model do?](#what-does-this-model-do)
 2. [What's in this repository?](#whats-in-this-repository)
 3. [The working directory](#the-working-directory)
@@ -33,7 +33,7 @@ This repository stores all of the data and code used to fit the integrated model
 This document here serves as a road map that describes all of the files present in this repository.
 
 
-[Back to table of contents ⤒](#longshot)
+[Back to table of contents ⤒](#a-repository-for)
 <p><a href="#top" style>Back to top ⤒</a></p>
 
 ### The working directory
