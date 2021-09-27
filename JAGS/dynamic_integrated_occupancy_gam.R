@@ -55,8 +55,6 @@ model{
 		}
 	}
 	# priors for latent state
-	# temporal random effect
-	#psi_mu ~ dnorm(-3.2, 0.75)
 	# slope terms
 	for(latent in 1:nlatent){
 		beta_occ[latent] ~ dnorm(0, 0.75)
@@ -93,7 +91,6 @@ model{
 	po_mu ~ dnorm(0, 0.75)
 	po_tau_season ~ dgamma(1,1)
 	po_sd_season <- 1 / sqrt(po_tau_season)
-	#lambda_po_det ~ dunif(0.001, 20)
 	for(year in 1:nyear){
 		po_season[year] ~ dnorm(0, po_tau_season)
 	}
