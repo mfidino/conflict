@@ -3,6 +3,8 @@
 
 Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Combining nuisance wildlife reports with wildlife monitoring data to estimate the probability of human-wildlife conflict relative to a species’ underlying distribution.
 
+## Table of contents
+1. [What does this model do?](#what-does-this-model-do)
 
 
 
