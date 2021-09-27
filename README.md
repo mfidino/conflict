@@ -9,6 +9,8 @@ Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Ad
 3. [The working directory](#the-working-directory)
 4. [The data folder (`./data`)](#the-data-folder-data)
 5. [The figures folder (`./figures`)](#the-figures-folder-figures)
+6. [The JAGS folder (`./JAGS`)](#the-jags-folder-jags)
+7. [The mcmc output folder (`./mcmc_output`)](#the-mcmc-output-folder-mcmc-output)
 
 
 ## What does this model do?
@@ -169,4 +171,29 @@ This folder houses some of the raw figures I generated in `R` (which I cleaned u
 |**`./figures/supl_raccoon.svg`** | Same, but as a scaleable vector graphic (output from R).|
 
 [Back to table of contents ⤒](#a-repository-for)
+
+### The JAGS folder (`./JAGS)
+
+This folder houses one script, which is the `JAGS` model that is fit to the data, which is titled `dynamic_integrated_occupancy_gam.R`. The code is commented out within the model pretty well (I had to write it in a way that was more difficult to read because it ran far faster that way).
+
+[Back to table of contents ⤒](#a-repository-for)
+
+### The mcmc output folder (`./mcmc_output`)
+
+This folder houses the posterior distributions from the models we fit to the data of coyote (`./mcmc_output/coyote_model.RDS`), opossum (`./mcmc_output/opossum_model.RDS`), and  raccoon (`./mcmc_output/raccoon_model.RDS`), which are stored as RDS files. I used `run.jags` to fit the models, so they are `runjags` objects. If you want to grab the posterior distribution from the models it can be done as:
+
+```R
+my_model <- readRDS("./mcmc_output/coyote_model.RDS)
+
+my_mcmc <- do.call("rbind", my_model$mcmc)
+```
+
+#### The diagnostic plots sub-folder (`./mcmc_output/diagnostic_plots)
+
+This folder has three sub-folders (one for coyote, one for opossum, and one for raccoon). Inside of each of these are the traceplots for each model parameter. They are generated when `fit_models.R` is run.  See `./JAGS/dynamic_integrated_occupancy_gam.R` for where each parameter fits into the model.
+
+[Back to table of contents ⤒](#a-repository-for)
+
+
+
 
