@@ -69,6 +69,8 @@ And here is what these variables look like plotted out across the city of Chicag
 | `Redfox`     | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational.                                                                          |
 | `Skunk`      | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational. Specifically, this is the striped skunk.                                 |
 
+</br>
+
 **`./data/chicago_variables_raster_500.tif`**: This is the `./data/all_raw_layers.RDS` file except saved as a raster file. See above for all information about the covariates included.
 **`./data/fall_2013.csv`**: The summarised detection / non-detection camera trap data for October 2013. Stored in a seperate file because we used a different database for these data.
 
@@ -79,6 +81,8 @@ And here is what these variables look like plotted out across the city of Chicag
 | `count`        | Integer  | The number of days a species was detected during sampling. NA if camera was not active. 0 if the species was not detected but the camera was operational. |
 | `J`            | Category | The number of days the camera was operational                                                                                                             |
 
+</br>
+
 **`./data/station_coords.csv`**: The coordinates of all the camera trapping locations in UTM (the coordinate reference system is `32616`).
 
 | Column      | Type                | Description          |
@@ -86,6 +90,8 @@ And here is what these variables look like plotted out across the city of Chicag
 | `StationID` | Category            | The site abbrevation |
 | `Northing`  | Coordinate (y-axis) | Northing for a site  |
 | `Easting`   | Coordinate (x-axis) | Easting for a site   |
+
+</br>
 
 **`./data/summer_2013.csv`**: The summarised detection / non-detection camera trap data for July 2013. Stored in a seperate file because we used a different database for these data.
 
