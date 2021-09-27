@@ -36,7 +36,7 @@ I have kept this single script outside of the `./R` folder because it would be t
 
 This folder has 6 files and 2 sub-folders.
 
-- **`./data/all_raw_layers.RDS`**: This is all of the raw spatial data used in the analysis. It is saved as a raster brick. There are seven covariates included in this raster brick. The resolution of each covariate is scaled for our analysis (i.e., 500 m cells throughout the city of Chicago).
+**`./data/all_raw_layers.RDS`**: This is all of the raw spatial data used in the analysis. It is saved as a raster brick. There are seven covariates included in this raster brick. The resolution of each covariate is scaled for our analysis (i.e., 500 m cells throughout the city of Chicago).
 
 | Covariate  | Type                   | Description                                                                                                                                                                                                                                                                                                                                                       |
 |------------|------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -52,7 +52,7 @@ And here is what these variables look like plotted out across the city of Chicag
 
 <div align="center"><img width="900" height="auto" src="./figures/spatial_variables.jpeg" alt="A plot of the 7 spatial variables calculated across Chicago" /></div>
 
-- **`./data/camera_trap_detections_sp10_sp_13.csv`**: The summarised detection / non-detection camera trap data between April 2010 and April 2013. 
+**`./data/camera_trap_detections_sp10_sp_13.csv`**: The summarised detection / non-detection camera trap data between April 2010 and April 2013. 
 
 | Column       | Type      | Description                                                                                                                                                                                                                                    |
 |--------------|-----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -69,8 +69,8 @@ And here is what these variables look like plotted out across the city of Chicag
 | `Redfox`     | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational.                                                                          |
 | `Skunk`      | Binary    | Equals 1 if the species was detected at that site on that day, 0 if the camera was active but the species was not detected, and NA if the camera was not operational. Specifically, this is the striped skunk.                                 |
 
-- **`./data/chicago_variables_raster_500.tif`**: This is the `./data/all_raw_layers.RDS` file except saved as a raster file. See above for all information about the covariates included.
-- **`./data/fall_2013.csv`**: The summarised detection / non-detection camera trap data for October 2013. Stored in a seperate file because we used a different database for these data.
+**`./data/chicago_variables_raster_500.tif`**: This is the `./data/all_raw_layers.RDS` file except saved as a raster file. See above for all information about the covariates included.
+**`./data/fall_2013.csv`**: The summarised detection / non-detection camera trap data for October 2013. Stored in a seperate file because we used a different database for these data.
 
 | Column         | Type     | Description                                                                                                                                               |
 |----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -79,7 +79,7 @@ And here is what these variables look like plotted out across the city of Chicag
 | `count`        | Integer  | The number of days a species was detected during sampling. NA if camera was not active. 0 if the species was not detected but the camera was operational. |
 | `J`            | Category | The number of days the camera was operational                                                                                                             |
 
-- **`./data/station_coords.csv`**: The coordinates of all the camera trapping locations in UTM (the coordinate reference system is `32616`).
+**`./data/station_coords.csv`**: The coordinates of all the camera trapping locations in UTM (the coordinate reference system is `32616`).
 
 | Column      | Type                | Description          |
 |-------------|---------------------|----------------------|
@@ -87,7 +87,7 @@ And here is what these variables look like plotted out across the city of Chicag
 | `Northing`  | Coordinate (y-axis) | Northing for a site  |
 | `Easting`   | Coordinate (x-axis) | Easting for a site   |
 
-- **`./data/summer_2013.csv`**: The summarised detection / non-detection camera trap data for July 2013. Stored in a seperate file because we used a different database for these data.
+**`./data/summer_2013.csv`**: The summarised detection / non-detection camera trap data for July 2013. Stored in a seperate file because we used a different database for these data.
 
 | Column         | Type     | Description                                                                                                                                               |
 |----------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
