@@ -23,6 +23,7 @@ This is a dynamic integrated occupancy that model combines presence-only human-w
 
 This model, however, is not "new". I have essentially combined the [Koshkina et al. (2017)](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12738) model with the generalized additive model portion of [Rushing et al. (2019)](https://www.nature.com/articles/s41598-019-48851-5). In brief, the latent occupancy probability during each time step has a spatial smoothing term applied (to control for spatiotemporal autocorrelation). Between time periods, the spatial smoothing term at time *t* is partially informed by the spatial smoothing term at time *t-1* (see our paper, or the Rushing et al. paper to see how this works).
 
+[Back to table of contents ⤒](#a-repository-for)
 
 ## What's in this repository?
 
@@ -34,13 +35,14 @@ This document here serves as a road map that describes all of the files present 
 
 
 [Back to table of contents ⤒](#a-repository-for)
-<p><a href="#top" style>Back to top ⤒</a></p>
 
 ### The working directory
 
 Aside from the aforementioned folders, the working directory here stores the `.gitignore` file for this repository, this README file (`README.md`) the `.Rproj` file (for if you are using RStudio, `conflict.Rproj`), and a single R script (`fit_models.R`).
 
 I have kept this single script outside of the `./R` folder because it would be the one script you need to run if you were interested in fitting the models to these data. On my computer it took a little over a week to run all three of these models. This script 1) iterates through the three species in a `for` loop 2) pulls in the relevant data and format it for analysis 3) fits the JAGS model and 4) saves the mcmc output and make traceplots of all model parameters in the `./mcmc_output` folder. 
+
+[Back to table of contents ⤒](#a-repository-for)
 
 ### The data folder (`./data`)
 
@@ -141,6 +143,8 @@ This stores all of the raw nuisance wildlife reports between 2011 and 2013 provi
 | `Block Address`      | Address  | The block address of where the report occurred                        |
 | `Description`        | Text     | A text description of the report                                      |
 
+[Back to table of contents ⤒](#a-repository-for)
+
 ### The figures folder (`./figures`)
 
 This folder houses some of the raw figures I generated in `R` (which I cleaned up using Inkscape), as well as other figures that were publication ready. All of the extra "cleaning" I needed to do was related to the maps I had made (there was too much spacing between images).
@@ -163,3 +167,6 @@ This folder houses some of the raw figures I generated in `R` (which I cleaned u
 |**`./figures/supl_opossum.svg`** | Same, but as a scaleable vector graphic (output from R).|
 |**`./figures/supl_raccoon.png`** | Supplmental figure for raccoon, which shows their spatiotemporal correlation in occupancy across the 12 seasons of sampling.|
 |**`./figures/supl_raccoon.svg`** | Same, but as a scaleable vector graphic (output from R).|
+
+[Back to table of contents ⤒](#a-repository-for)
+
