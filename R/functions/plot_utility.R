@@ -6,6 +6,49 @@
 # 
 ##################################
 
+
+# gen_mvn: 
+#  simulate covariate values over cells in a raster
+#
+# rast = raster object of plane
+#
+# mu = numeric vector of length 2. Each mu is proportionally where you want
+#  the mean value to be. (0,0) is the bottom left, (1,1) is top right.
+# 
+# sigma = Variance of covariate on x and y axes
+#
+# rho = Correlation of covariate on x and y axes
+gen_mvn <- function(rast = NULL, mu = NULL,
+										sigma = NULL, rho = NULL){
+	# error checking
+	if(length(mu) != 2 | !is.numeric(mu) | any(mu > 1) | any(mu < 0)){
+		stop("mu must be a numeric vector of length 2.")
+	}
+	if(length(sigma) != 2 | !is.numeric(sigma) | any(sigma < 0)){
+		stop("Sigma must be a non-negative numeric vector of length 2.")
+	}
+	if(length(rho) != 1 | !is.numeric(rho)| rho > 1 |rho < -1){
+		stop("rho must be a numeric scalar between -1 and 1.")
+	}
+	
+	# get bounds of raster
+	bounds <- extent(rast)
+	
+	# input a proportion of where you want mu to be on x and y
+	mu_loc <- c(bounds@xmin + mu[1] * (bounds@xmax - bounds@xmin),
+							bounds@ymin + mu[2] * (bounds@ymax - bounds@ymin))
+	
+	Sigma <- diag(c(sigma[1] * abs(bounds@xmax - bounds@xmin),
+									sigma[2] * abs(bounds@ymax - bounds@ymin)))
+	# fill the off diagonal
+	Sigma[2:3] <- rep(rho * prod(diag(Sigma)))
+	
+	to_return <- dmvnorm(xyFromCell(rast, 1:ncell(rast)), 
+											 mean=mu_loc, 
+											 sigma=Sigma)
+}
+
+
 # plot_dist:
 #  This plots out the distribution of a species via gen_process
 #  One plot will be generated for each sampling session.
