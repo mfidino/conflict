@@ -4,6 +4,8 @@
 Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Combining nuisance wildlife reports with wildlife monitoring data to estimate the probability of human-wildlife conflict relative to a species’ underlying distribution.
 
 
+
+
 ## What does this model do?
 
 This is a dynamic integrated occupancy that model combines presence-only human-wildlife conflict data with detection/non-detection data from a wildlife survey (e.g,. camera trapping). Doing so allows you to estimate a species distribution (Figure 1A), their conflict potential (Figure 1B), and where conflict actually occurs on the landscape (Figure 1C). This is useful if you are interested in controlling for a species distribution when making predictions about where human-wildlife conflict occurs (which we should be interested in).
@@ -25,6 +27,7 @@ This repository stores all of the data and code used to fit the integrated model
 
 This document here serves as a road map that describes all of the files present in this repository.
 
+<p><a href="#top" style>Back to top ⤒</a></p>
 
 ### The working directory
 
