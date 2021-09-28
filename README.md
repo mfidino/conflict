@@ -190,6 +190,8 @@ my_model <- readRDS("./mcmc_output/coyote_model.RDS)
 my_mcmc <- do.call("rbind", my_model$mcmc)
 ```
 
+This folder also has a summary of all the parameters as a pdf (which was the supplemental material for the manuscript). There is an R markdown file (`./mcmc_output/summary_all_parameters.Rmd`) and the associated PDF that was knitted from it (`./mcmc_output/summary_all_parameters.pdf`).
+
 #### The diagnostic plots sub-folder (`./mcmc_output/diagnostic_plots)
 
 This folder has three sub-folders (one for coyote, one for opossum, and one for raccoon). Inside of each of these are the traceplots for each model parameter. They are generated when `fit_models.R` is run.  See `./JAGS/dynamic_integrated_occupancy_gam.R` for where each parameter fits into the model.
