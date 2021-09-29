@@ -171,12 +171,16 @@ row_org <- function(x){
 		locs[[i]] <- grep(my_regex[i], rn)
 	}
 	locs <- unlist(locs)
-	cresults <- cresults[locs,]
-	
+	x <- x[locs,]
+	return(x)
 }
-
+cresults <- row_org(cresults)
 
 colnames(cresults)[4:5] <- c("Effective sample size", "Gelman-Rubin diagnostic")
+cresults <- cbind(row.names(cresults), cresults)
+cresults <- data.frame(cresults)
+colnames(cresults)[1] <- "Parameter"
+row.names(cresults) <- NULL
 
 	knitr::kable(
 		cresults,
@@ -230,12 +234,17 @@ row_org <- function(x){
 		locs[[i]] <- grep(my_regex[i], rn)
 	}
 	locs <- unlist(locs)
-	cresults <- cresults[locs,]
-	
+	x <- x[locs,]
+	return(x)
 }
+cresults <- row_org(cresults)
 
 
 colnames(cresults)[4:5] <- c("Effective sample size", "Gelman-Rubin diagnostic")
+cresults <- cbind(row.names(cresults), cresults)
+cresults <- data.frame(cresults)
+colnames(cresults)[1] <- "Parameter"
+row.names(cresults) <- NULL
 
 	knitr::kable(
 		cresults,
@@ -289,12 +298,17 @@ row_org <- function(x){
 		locs[[i]] <- grep(my_regex[i], rn)
 	}
 	locs <- unlist(locs)
-	cresults <- cresults[locs,]
-	
+	x <- x[locs,]
+	return(x)
 }
+cresults <- row_org(cresults)
 
 
 colnames(cresults)[4:5] <- c("Effective sample size", "Gelman-Rubin diagnostic")
+cresults <- cbind(row.names(cresults), cresults)
+cresults <- data.frame(cresults)
+colnames(cresults)[1] <- "Parameter"
+row.names(cresults) <- NULL
 
 	knitr::kable(
 		cresults,
