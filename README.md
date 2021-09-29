@@ -5,14 +5,26 @@ Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Ad
 
 ## Links to different parts of the readme file
 
-1. [What does this model do?](#what-does-this-model-do)
-2. [What's in this repository?](#whats-in-this-repository)
+1. [What's in this repository?](#whats-in-this-repository)
+2. [What does this model do?](#what-does-this-model-do)
 3. [The working directory](#the-working-directory)
 4. [The data folder (`./data`)](#the-data-folder-data)
 5. [The figures folder (`./figures`)](#the-figures-folder-figures)
 6. [The JAGS folder (`./JAGS`)](#the-jags-folder-jags)
 7. [The mcmc output folder (`./mcmc_output`)](#the-mcmc-output-folder-mcmc_output)
 8. [The R folder (`./R`)](#the-r-folder-r)
+
+
+## What's in this repository?
+
+
+
+This repository stores all of the data and code used to fit the integrated model to the Chicago, Illinois nuisance wildlife complaint data and the camera trap data we collected between 2011 and 2013. The folder organization seperates the data (`./data`),figures from the manuscript (`./figures`), JAGS model (`./JAGS`), the mcmc outputs from the model we fit to the data for coyote, Virginia opossum, and raccoon (`./mcmc_outputs`), and  R code (`./R`).
+
+This document here serves as a road map that describes all of the files present in this repository.
+
+
+[Back to table of contents ⤒](#a-repository-for)
 
 
 ## What does this model do?
@@ -26,17 +38,6 @@ This is a dynamic integrated occupancy that model combines presence-only human-w
 </br>
 
 This model, however, is not "new". I have essentially combined the [Koshkina et al. (2017)](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12738) model with the generalized additive model portion of [Rushing et al. (2019)](https://www.nature.com/articles/s41598-019-48851-5). In brief, the latent occupancy probability during each time step has a spatial smoothing term applied (to control for spatiotemporal autocorrelation). Between time periods, the spatial smoothing term at time *t* is partially informed by the spatial smoothing term at time *t-1* (see our paper, or the Rushing et al. paper to see how this works).
-
-[Back to table of contents ⤒](#a-repository-for)
-
-## What's in this repository?
-
-
-
-This repository stores all of the data and code used to fit the integrated model to the Chicago, Illinois nuisance wildlife complaint data and the camera trap data we collected between 2011 and 2013. The folder organization seperates the data (`./data`),figures from the manuscript (`./figures`), JAGS model (`./JAGS`), the mcmc outputs from the model we fit to the data for coyote, Virginia opossum, and raccoon (`./mcmc_outputs`), and  R code (`./R`).
-
-This document here serves as a road map that describes all of the files present in this repository.
-
 
 [Back to table of contents ⤒](#a-repository-for)
 
