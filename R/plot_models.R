@@ -288,8 +288,8 @@ for(sp in 1:3){
   	par(xpd = NA)
   	text(x = u[1]+15000,y = u[4] + 3500, labels = labs[i] , cex = 1.5)
   	if(i == 1){
-  		addnortharrow(pos = "topright", padin = c(0.3,0.1), scale = 0.5)
-  		addscalebar(plotepsg = utm_crs, style = "ticks",
+  		prettymapr::addnortharrow(pos = "topright", padin = c(0.3,0.1), scale = 0.5)
+  		prettymapr::addscalebar(plotepsg = utm_crs, style = "ticks",
   								padin =c(0.35, 0), lwd = 2, label.cex = 1.5)
   	}
   }
