@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 **Supplemental material for:**
 
-Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Combining nuisance wildlife reports with wildlife monitoring data to estimate the probability of human-wildlife conflict relative to a species’ underlying distribution.
+Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Integrated human-wildlife conflict models reveal how a species distribution can inform where conflict occurs.
 
 ## Camera trap settings
 
@@ -71,6 +71,21 @@ Values = c(
 	kable_styling(latex_options = "HOLD_position")
 
 ```
+
+\newpage
+
+## Figures
+
+![Coyote supplemental]("../figures/supl_coyote.png")
+**Figure S1.1.** The estimated occupancy of coyote (*Canis latrans*) from the integrated occupancy model for each sampling period throughout Chicago, Illinois, USA.
+
+\newpage
+![Opossum supplemental]("../figures/supl_opossum.png")
+**Figure S1.2.** The estimated occupancy of Virginia opossum (*Didelphis virginiana*) from the integrated occupancy model for each sampling period throughout Chicago, Illinois, USA.
+
+\newpage
+![Coyote supplemental]("../figures/supl_raccoon.png")
+**Figure S1.3.** The estimated occupancy of raccoon (*Procyon lotor*) from the integrated occupancy model for each sampling period throughout Chicago, Illinois, USA.
 
 \newpage
 ## Parameter definitions
