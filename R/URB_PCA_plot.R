@@ -40,7 +40,7 @@ plot(chicago_raster$URB1)
 
 windows(12,12)
 
-svg("./figures/tmp_supp_map.svg", height = 12, width = 12)
+svg("./figures/supl_urb_map.svg", height = 12, width = 12)
 m <- matrix(
 	1:6,
 	ncol =2,
