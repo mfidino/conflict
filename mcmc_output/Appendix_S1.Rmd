@@ -76,7 +76,7 @@ Values = c(
 
 
 ![Map supplemental]("../figures/supl_urb_map.png")
-**Figure S1.** The four environmental variables used to construct the two urban intensity axes that were derived via Principal Components Analysis, as well as the two urban intensity axes. The loadings of the first metric, URB1, were canopy (-0.28), grass (-0.58), impervious (0.67), and housing density (0.39). Thus, this metric represented a gradient of urban intensity. Negative values of URB1 represented portions of the Chicago landscape high in canopy and grass cover while positive values were areas with high levels of impervious cover and housing density. The loadings of the second metric, URB2, were canopy (0.82), grass (-0.29), impervious (-0.18), and housing density (0.46). As such, URB2 separated areas of grass or impervious cover when negative from areas with tree cover and houses when positive. 
+**Figure S1.** The four environmental variables used to construct the two urban intensity metrics that were derived via Principal Components Analysis, as well as the two urban intensity metrics. The loadings of the first metric, URB1, were canopy (-0.28), grass (-0.58), impervious (0.67), and housing density (0.39). Thus, this metric represented a gradient of urban intensity. Negative values of URB1 represented portions of the Chicago landscape high in canopy and grass cover while positive values were areas with high levels of impervious cover and housing density. The loadings of the second metric, URB2, were canopy (0.82), grass (-0.29), impervious (-0.18), and housing density (0.46). As such, URB2 separated areas of grass or impervious cover when negative from areas with tree cover and houses when positive. 
 
 
 ![Coyote supplemental]("../figures/supl_coyote.png")

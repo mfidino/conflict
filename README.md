@@ -12,7 +12,8 @@ Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Ad
 5. [The figures folder (`./figures`)](#the-figures-folder-figures)
 6. [The JAGS folder (`./JAGS`)](#the-jags-folder-jags)
 7. [The mcmc output folder (`./mcmc_output`)](#the-mcmc-output-folder-mcmc_output)
-8. [The R folder (`./R`)](#the-r-folder-r)
+8. [The parameter summary folder (`./parameter_summary`)](#the-parameter-summary-folder-parameter_summary)
+9. [The R folder (`./R`)](#the-r-folder-r)
 
 
 ## What's in this repository?
@@ -209,6 +210,13 @@ This folder has three sub-folders (one for coyote, one for opossum, and one for 
 #### The validation sub-folder (`./mcmc_output/validation`)
 
 This sub-folder contains the posterior distributions from the models fit to only a portion of the human-wildife conflict data so that we could do some model validation for the coyote (`./mcmc_output/valdiation/coyote_validation_model.RDS`), opossum (`./mcmc_output/valdiation/opossum_validation_model.RDS`), and raccoon (`./mcmc_output/valdiation/raccoon_validation_model.RDS`). There are two other RDS files, which are created via `./R/validate_model.R`, and include `ROC_scores.RDS` and `model_auc.RDS`. The former is a list object of length three (one element for each species) that contains the ROC scores for each potential threshold and sampling period. The latter is also a list object of length three (one element for each species) that summarises the AUC scores. Each element is also a list and contains the global AUC across the whole study (e.g., `model_auc$coyote$auc_global`), for each sampling period (e.g.,`model_auc$coyote$auc_year`), as well as the true positive rate (tpr), false positive rate (fpr), and accuracy (acc) for each threshold and sampling period. We used 41 threshold values, evenly spaced between 0 and 1.
+
+[Back to table of contents ⤒](#a-repository-for)
+
+
+### The parameter summary folder (`./parameter_summary`)
+
+This folder houses three files that contain a summary of of parameters estimated by the model for coyote (`./parameter_summary/coyote_parameter_estimates.csv`), opossum (`./parameter_summary/opossum_parameter_estimates.csv`), and raccoon (`./parameter_summary/raccoon_parameter_estimates.csv`). Each file contains the median estimate of each parameter, 95% credible interval, effective sample size, and Gelman-Rubin diagnostic. The file `./parameter_summary/metadata.csv` contains information to link the parameter names (as specified in the `JAGS` script) to the model explanation in the manuscript.
 
 [Back to table of contents ⤒](#a-repository-for)
 
