@@ -1,7 +1,7 @@
 
 # A repository for:
 
-Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Combining nuisance wildlife reports with wildlife monitoring data to estimate the probability of human-wildlife conflict relative to a species’ underlying distribution.
+Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Integrated species distribution models reveal spatiotemporal patterns of human–wildlife conflict. *Ecological Applications*
 
 ## Links to different parts of the readme file
 
