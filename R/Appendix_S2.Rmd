@@ -1,0 +1,98 @@
+---
+title: "Appendix S2 for:"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+auc_list <- readRDS("../mcmc_output/validation/model_auc.RDS")
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Integrated species distribution models reveal spatiotemporal patterns of human–wildlife conflict. *Ecological Applications*
+
+
+
+
+## Sub-sampling of the conflict-data for model validation
+
+
+As described in the manuscript, we fit the same model to these data save for one small change to create some out of sample data for validation purposes. As the primary interest of this model is understanding where human-wildlife conflict may occur, we used the entire camera trapping data set for the training data and subset the presence-only conflict data. To do so, we reduced the presence-only sampling window for each primary sampling period by one month, and held out those data for model validation. For example, the July 2011 camera trapping data set would generally be linked to the presence-only human-wildlife conflict data from June, July, and August of 2011. For model validation, we instead used data from the month before and during a camera trap deployment (e.g., June and July) and then held out the data from the following month (e.g., August). For coyote, opossum, and raccoon this respectively left 1936, 1100, 1787  presence-only conflict records for model training and 1347 (41% of the data), 602 (~35% of the data), 962 (~31% of the data) presence-only conflict records for validation. We did this temporal stratification to ensure there was data present for model validation during every primary sampling period.
+
+## Model fitting
+
+We used the same exact procedure outlined in the manuscript to fit the training data to the model. This included the number of chains ran, adaptation steps, burn-in steps, MCMC samples collected, and model convergence diagnostics. The models adequately converged with the training data.
+
+## Model validation metrics and results
+
+For *s* in 1,...,*S* steps of the MCMC chain, *c* in 1,...,*C* 500 m^2^ landscape cells throughout Chicago, and *t* in 1,...,*T* primary sampling periods we calculated the conditional probability of human-wildlife conflict for each species based on our model and training data as
+
+$$Pr(\psi_{s,c,t}) \times Pr(\eta_{s,c,t})$$
+
+which was based on the linear predictors for those portions of the model. Following this, we randomly sub-sampled 5000 of the MCMC steps for each species and calculated the receiver operating characteristic (ROC) curve across the entire data set and for each primary sampling period. ROC curves represent the trade-off between sensitivity and specificity, wherein the points along the curve represent thresholds used to determine whether human-wildlife conflict occurred (i.e., a sequence of values between 0 and 1). We calculated sensitivity as the true positive rate (TPR) of the validation data:
+
+$$TPR = \frac{TP}{TP + FN}$$
+
+Where TP is the count of true positives in the validation data (i.e., a test result that correctly predicted human-wildlife conflict) and FN is the count of false negatives (i.e., a test result that falsely indicates human-wildlife conflict was absent). We calculated specificity as the false positive rate (FPR) of the validation data:
+
+$$FPR = \frac{FP}{FP + TN}$$
+
+where FP is the count of false positives in the validation data (i.e., a test result that incorrectly predicted human-wildlife conflict) and TN is the count of true negatives (i.e., a test result that correctly indicates human-wildlife conflict was absent). 
+
+We calculated TPR and FPR for each of the 5000 sub-sampled MCMC steps using the conditional probability of human-wildlife conflict (i.e., $Pr(\psi_{s,c,t}) \times Pr(\eta_{s,c,t})$), a sequence of 41 evenly spaced threshold values between 0 and 1 to convert the probability of human-wildlife conflict into a binary outcome (in `R` this was `seq(from = 0, to = 1, by = 0.025)`), and the validation data. For each species, this resulted in 65,000 ROC curves (5000 MCMC steps by 12 primary sampling periods, as well as the ROC across the entire study). For each of these, we calculated the area under the ROC (AUC), which ranges from 0 to 1. Unlike the BS, AUC = 0 indicates a perfectly inaccurate model while AUC = 1 is a perfectly accurate model. In general, AUC values between 0.7 and 0.8 are acceptable, between 0.8 and 0.9 and great, and greater than 0.9 is fantastic (Hosmer and Lemeshow 2000).
+
+Across all species, AUC scores were acceptable. Across the entire data set, AUC was 0.75 for coyote (95% CI = 0.66, 0.79), 0.72 for opossum (95% CI = 0.68, 0.76), and 0.71 for raccoon (95% CI = 0.68, 0.78). Within primary sampling periods, there was some variation in AUC (Figure S1.1).
+
+
+```{r auc_plot, echo = FALSE, fig.width=5, fig.height=8, warning=FALSE, fig.align = "center"}
+par(mar= c(4,7,1,1), mfrow = c(3,1))
+pnames <- c("a) coyote", "b) opossum", "c) raccoon")
+for(sp in 1:3){
+plot(1~1, type = 'n', ylim = c(0.58, 0.8), xlim = c(0.5,12.5),
+		 bty = 'l', pch = 16,
+		 ylab = "", xlab = "", xaxt = 'n', yaxt = 'n', cex = 1.2,
+		 xaxs = "i", yaxs = "i")
+	u <- par("usr")
+for(i in 1:12){
+	lines(x = rep(i, 2), y = auc_list[[sp]]$auc_year[c(1,3),i])
+}
+lines(auc_list[[sp]]$auc_year[2,] ~c(1:12) , lty = 2)
+se <- c("Jan", "Apr", "Jul", "Oct")
+axis(1, at= c(1:12), labels = F, tck = -0.035/2)
+mtext("Year:", 1, line = 0.6, at = -0.9, cex = 1)
+mtext("Month:", 1, line = 1.7, at = -1.075, cex = 1)
+mtext(text = c(2011:2013), 1, line = 0.6, at = c(1,5,10), cex = 0.8)
+mtext(text = rep(se, 4),1, line =1.7, at = c(1:12), cex = 0.8)
+axis(2, at = seq(0.6,0.8, 0.05), labels = F, tck = -0.035/2)
+axis(2, at = seq(0.6,0.8, 0.025), labels = F, tck = -0.035/4)
+mtext(text = seq(0.6,0.8,0.05),2, las = 1, at = seq(0.6,0.8,0.05), line = 0.8)
+
+
+points(auc_list[[sp]]$auc_year[2,], pch = 21, bg = "gray", cex = 1.5)
+mtext(text = "AUC", 2, at = 0.7, line = 4, cex = 1.4)
+par(xpd = NA)
+text(
+	x = u[1] + 0.1,
+	y = u[4] ,
+	labels = pnames[sp],
+	pos = 4,
+	cex = 1.5
+)
+
+}
+
+
+
+```
+\
+**Figure S1.** The AUC scores each primary sampling period for out of sample human-wildlife conflict data for the coyote (a), opossum (b), and raccoon (c). Overall, the model did an acceptable job in predicting out of sample human-wildlife conflicts.
+
+## Next steps
+
+If the goal of a given study is to increase out of sample prediction, then the next steps would be to fit a variety of models that vary in their linear predictors and compare their predictive accuracy to out of sample data (Tredenick et al. 2021). For example, this could include adding in polynomial terms to capture non-linear responses to environmental gradients, different random effect structures, or environmental covariates. In this case, the model we chose to make inference with already provided acceptable fit to out of sample data, but there is no doubt other covariates that could be included to increase out of sample predictive ability. One key benefit of working with human-wildlife conflict data generated by a city government is that there will almost always be additional years of data that could be requested, which could make it possible to make forecasts of human-wildlife conflict into the future. While this would have been possible with our own data set, we found that receiving said data can take some time (about one year in our case), and so it is likely best to try and request data for both training and testing at the same time. But, of course, your mileage may vary when making requests for such data. 
+
+
+## References
+
+Hosmer, D. W. and  Lemeshow, S. (2000). Applied Logistic Regression, 2nd Ed. Chapter 5, John Wiley and Sons, New York, NY (2000), pp. 160-164.
+
+Tredenek, A. T., Hooker, G., Ellner, S. P., and Adler, P. B. (2021). A practical guide to selecting models for exploration, inference, and prediction in ecology. Ecology. 102:e03336. 

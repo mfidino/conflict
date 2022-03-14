@@ -288,8 +288,8 @@ for(sp in 1:3){
   	par(xpd = NA)
   	text(x = u[1]+15000,y = u[4] + 3500, labels = labs[i] , cex = 1.5)
   	if(i == 1){
-  		addnortharrow(pos = "topright", padin = c(0.3,0.1), scale = 0.5)
-  		addscalebar(plotepsg = utm_crs, style = "ticks",
+  		prettymapr::addnortharrow(pos = "topright", padin = c(0.3,0.1), scale = 0.5)
+  		prettymapr::addscalebar(plotepsg = utm_crs, style = "ticks",
   								padin =c(0.35, 0), lwd = 2, label.cex = 1.5)
   	}
   }
@@ -517,20 +517,20 @@ fp[,3] <- (fp[,3] - mean(values(chicago_raster$vacancy), na.rm = TRUE))/
 	sd(values(chicago_raster$vacancy), na.rm = TRUE)
 my_cols <- rev(c("#24d5f7ff", "#5ee38bff", "#ffb226ff"))
 
-windows(5,4)
+
 {
 	tiff("./figures/figure_4.tiff", height = 4, width = 5,
 			 units = "in", res = 1200, compression = "lzw")
 
 m2 <- matrix(
 	c(
-	  8,rep(1,3),rep(c(4,6),each = 3),
-	  8,rep(1,3),rep(c(4,6),each = 3),
-	  8,rep(2,3),rep(c(4,6),each = 3),
-	  8,rep(2,3),rep(c(5,7),each = 3),
-	  8,rep(3,3),rep(c(5,7),each = 3),
-	  8,rep(3,3),rep(c(5,7),each = 3),
-	  rep(8,10)
+	  10,rep(1,3),rep(c(4,7),each = 3),
+	  10,rep(1,3),rep(c(4,7),each = 3),
+	  10,rep(2,3),rep(c(5,8),each = 3),
+	  10,rep(2,3),rep(c(5,8),each = 3),
+	  10,rep(3,3),rep(c(6,9),each = 3),
+	  10,rep(3,3),rep(c(6,9),each = 3),
+	  rep(10,10)
 	 ),
 	  ncol = 10,
 	  nrow = 7,
@@ -539,26 +539,27 @@ m2 <- matrix(
 
 # flip it a bit to plot downwards
 layout(m2)
-par(mar = c(2,3,2,1))
+par(mar = c(1.5,1.5,1.5,1.5))
 my_axis <- list(
 	seq(-2,2,2),
 	seq(0,15,5),
 	seq(0,5,5)
 )
-sp_seq <- c(1,1,1,2,3,2,3,2,3)
-col_seq <- c(2:4, 2,2,3,3,4,4)
-my_labs <- c("A)", NA,NA,paste0(LETTERS[2:7],")"))
+sp_seq <- rep(1:3, 3)
+par_seq <- rep(2:4, each = 3)
+col_seq <-rep(2:4,3)
+my_labs <- c(paste0(LETTERS[1:9],")"))
 
 for(i in 1:9){
-	if(i %in% c(6,7)){
-		par(mar = c(2,3,2,1))
-	}
-	if(i %in% c(8:9)){
-		par(mar = c(2,1,2,3))
-	}
-	if(i %in% c(2,3)){
-		next
-	}
+	#if(i %in% c(6,7)){
+	#	par(mar = c(2,3,2,1))
+	#}
+	#if(i %in% c(8:9)){
+	#	par(mar = c(2,1,2,3))
+	#}
+	#if(i %in% c(2,3)){
+	#	next
+	#}
 	
 	# get the posterior
 	tmp_mat <- mm[[sp_seq[i]]][,
@@ -569,17 +570,17 @@ for(i in 1:9){
 										 	"beta_po_det[3]"
 										 	)]
 	# get predictions
-	to_plot <- tmp_mat[,c(1,col_seq[i])] %*% t(cbind(1,fp[,col_seq[i]-1]))
+	to_plot <- tmp_mat[,c(1,par_seq[i])] %*% t(cbind(1,fp[,par_seq[i]-1]))
 	to_plot <- apply(to_plot,2, quantile, probs = c(0.025,0.5,0.975))
 
 	plot(1~1, type = "n", xaxt = "n", yaxt = "n", ylim = c(0,1),
-			 xlim = range(my_grads[,col_seq[i]-1]),
+			 xlim = range(my_grads[,par_seq[i]-1]),
 			 xaxs = "i", yaxs="i", bty = "l")
 	u <- par("usr")
-	to_mult <- c(1,10000,10)[col_seq[i]-1]
-	axis(1, my_axis[[col_seq[i]-1]]*to_mult, labels = FALSE, tck = -0.035)
-	tmp <- range(my_axis[[col_seq[i]-1]])
-	ou <- c(5,7,5)[col_seq[i]-1]
+	to_mult <- c(1,10000,10)[par_seq[i]-1]
+	axis(1, my_axis[[par_seq[i]-1]]*to_mult, labels = FALSE, tck = -0.035)
+	tmp <- range(my_axis[[par_seq[i]-1]])
+	ou <- c(5,7,5)[par_seq[i]-1]
 
 	axis(1, seq(tmp[1]*to_mult, tmp[2]*to_mult, length.out = ou), labels = FALSE, tck = -0.035/2)
 	axis(2, seq(0,1,0.25), tck= -0.035, labels = FALSE)
@@ -587,13 +588,13 @@ for(i in 1:9){
 	if(i %in% c(7:9)){
 		#stop("add mtext")
 	}
-	if(i == 4){
+	if(i == 2){
 		mtext("Conditional conflict potential", 2, line = 3.5)
 	}
-	if(i == 5){
+	if(i == 3){
 		mtext("URB2", 1, line = 2.75,  cex = 1)
 	}
-	if(i == 7){
+	if(i == 6){
 		mtext("Income", 1, line = 2.75, cex = 1)
 		mtext(expression("("*"10K"~km^-2~")"), 1, line = 4.75, cex = 1)
 	}
@@ -601,19 +602,19 @@ for(i in 1:9){
 		mtext("Vacancy", 1, line = 2.75, cex = 1)
 		mtext(expression("("*calls~km^-2~")"), 1, line = 4.75,cex = 1)
 	}
-	if(i %in% c(1,4:7)){
+	if(i %in% c(1,2,3)){
 		mtext(sprintf("%.1f", c(0,0.5,1)), at = c(0,0.5,1),side = 2,las=1,
 					line = 0.75)
 	}
-	if(i == 5){
+	if(i == 3){
 		mtext(sprintf("%.0f", c(-2,0,2)), at = c(-2,0,2), side = 1, 
 					line = 1
 		)
 	}
-	if(i ==7){
+	if(i ==6){
 		mtext(
-			sprintf("%.0f", my_axis[[col_seq[i]-1]]),
-			at = my_axis[[col_seq[i]-1]] *to_mult,
+			sprintf("%.0f", my_axis[[par_seq[i]-1]]),
+			at = my_axis[[par_seq[i]-1]] *to_mult,
 			side = 1, 
 					line = 1
 		)
@@ -626,7 +627,7 @@ for(i in 1:9){
 			line = 1
 		)
 	}
-	x1 <- my_grads[,col_seq[i]-1]
+	x1 <- my_grads[,par_seq[i]-1]
 	x2 <- rev(x1)
 	y1 <- to_plot[1,]
 	y2 <- rev(to_plot[3,])
@@ -636,7 +637,7 @@ for(i in 1:9){
 		col = scales::alpha(my_cols[sp_seq[i]], 0.5)
 	)
 	lines(
-		x = my_grads[,col_seq[i]-1],
+		x = my_grads[,par_seq[i]-1],
 		y = plogis(to_plot[2,]),
 		lty = c(1,4,3)[sp_seq[i]],
 		col = my_cols[sp_seq[i]],
@@ -644,12 +645,11 @@ for(i in 1:9){
 	)
 
 	text(x = u[1], y = u[4] - 0.08, my_labs[i], pos = 4 )
-	if(i == 9){
+	if(i == 7){
 		legend("bottomright", c("coyote", "opossum", "raccoon"),
 					 lty = c(1,4,3), col = my_cols, lwd = 4, bty = "n",
 					 cex =1, seg.len = 3)
 	}
-
 }
 }
 dev.off()
