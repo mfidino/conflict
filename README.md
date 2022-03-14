@@ -1,4 +1,4 @@
-[![DOI](https://zenodo.org/badge/154370457.svg)](https://zenodo.org/badge/latestdoi/154370457)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6354467.svg)](https://doi.org/10.5281/zenodo.6354467)
 
 # A repository for:
 
