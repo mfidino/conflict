@@ -80,6 +80,14 @@ podat <- dplyr::inner_join(
 # sort by season
 podat <- podat[order(podat$season),]
 
+tmp_ls <- ls()
+if("validation_time" %in% tmp_ls){
+  if(validation_time){
+  	podat <- podat_val
+  	podat <- podat[order(podat$season),]
+  }
+}
+rm(tmp_ls)
 # The next thing we need to do is get a count of conflicts across our raster.
 chicago_raster <- readRDS("./data/all_raw_layers.rds")
 

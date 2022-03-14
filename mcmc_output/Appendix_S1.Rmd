@@ -1,0 +1,93 @@
+---
+title: "Appendix S1 for:"
+output: pdf_document
+header-includes:
+    - \usepackage{caption}
+---
+
+\captionsetup[table]{labelformat=empty}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+	source("../R/functions/utility_script.R")
+	packs <- c(
+		"lubridate", "raster", "sp", 
+		"sf", "runjags", "coda", "mgcv", "knitr", "kableExtra"
+	)
+	package_load(packs)
+```
+
+Fidino, M, Lehrer, E. W., Kay, C. A. M., Yarmey, N., Murray, M. H., Fake, K., Adams, H. C., & Magle, S. B. Integrated species distribution models reveal spatiotemporal patterns of human–wildlife conflict. *Ecological Applications*
+
+## Camera trap settings
+
+```{r ct, echo = FALSE}
+ct_df <- data.frame(
+Settings = c(
+	"Models",
+	"Mode",
+	"Image size",
+	"Capture number",
+	"Video size",
+	"Video length",
+	"Interval between captures",
+	"Sensor level",
+	"Format",
+	"TV out",
+	"Time stamp",
+	"Set clock",
+	"Field scan",
+	"Video sound",
+	"Default set"
+),
+Values = c(
+	"Bushnell Trophy Cam Standard Edition and HD models",
+	"Camera",
+	"5M pixel",
+	"1 photo",
+	NA,
+	NA,
+	"30 seconds",
+	"Normal",
+	"Execute (format memory card every time before deploying cameras or replacing memory cards)",
+	"NTSC",
+	"On",
+	"24 hour, year-month-day America/Chicago timezone",
+	"Off",
+	NA,
+	"Cancel"
+)
+)
+	knitr::kable(
+		ct_df,
+		"latex",
+		caption = "Table S1. Camera trap settings for this study"
+	) %>% 
+	column_spec(
+	  2,
+	  width = "10cm"
+  ) %>% 
+	kable_styling(latex_options = "HOLD_position")
+
+```
+
+\newpage
+
+## Figures
+
+
+![Map supplemental]("../figures/supl_urb_map.png")
+**Figure S1.** The four environmental variables used to construct the two urban intensity axes that were derived via Principal Components Analysis, as well as the two urban intensity axes. The loadings of the first metric, URB1, were canopy (-0.28), grass (-0.58), impervious (0.67), and housing density (0.39). Thus, this metric represented a gradient of urban intensity. Negative values of URB1 represented portions of the Chicago landscape high in canopy and grass cover while positive values were areas with high levels of impervious cover and housing density. The loadings of the second metric, URB2, were canopy (0.82), grass (-0.29), impervious (-0.18), and housing density (0.46). As such, URB2 separated areas of grass or impervious cover when negative from areas with tree cover and houses when positive. 
+
+
+![Coyote supplemental]("../figures/supl_coyote.png")
+**Figure S2.** The estimated occupancy of coyote (*Canis latrans*) from the integrated occupancy model for each sampling period throughout Chicago, Illinois, USA.
+
+\newpage
+![Opossum supplemental]("../figures/supl_opossum.png")
+**Figure S3.** The estimated occupancy of Virginia opossum (*Didelphis virginiana*) from the integrated occupancy model for each sampling period throughout Chicago, Illinois, USA.
+
+\newpage
+![Coyote supplemental]("../figures/supl_raccoon.png")
+**Figure S4.** The estimated occupancy of raccoon (*Procyon lotor*) from the integrated occupancy model for each sampling period throughout Chicago, Illinois, USA.
+
+
